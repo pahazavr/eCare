@@ -21,9 +21,6 @@
     </tr>
     <c:forEach var="tariff" items="${tariffsList}">
         <tr>
-            ${tariffsList.size()}
-        </tr>
-        <tr>
             <td>${tariff.id}</td>
             <td>${tariff.title}</td>
             <td>${tariff.price}</td>

@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class Tariff {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "tariff_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
@@ -39,5 +39,10 @@ public class Tariff {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Tariff [title=" + title + ", price=" + price + "]";
     }
 }

@@ -4,5 +4,6 @@ import tsystems.javaschool.eCare.model.Client;
 
 public interface ClientService {
     void add(Client client);
-    Client getById(int id);
+    Client getById(Long id);
+    Client findByUsername (String username);
 }

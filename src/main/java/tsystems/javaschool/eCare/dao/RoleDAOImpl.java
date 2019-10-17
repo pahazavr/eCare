@@ -5,9 +5,12 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import tsystems.javaschool.eCare.model.Client;
+import tsystems.javaschool.eCare.model.Role;
+
+import java.util.List;
 
 @Repository
-public class ClientDAOImpl implements ClientDAO {
+public class RoleDAOImpl implements RoleDAO {
 
     private SessionFactory sessionFactory;
 
@@ -17,20 +20,15 @@ public class ClientDAOImpl implements ClientDAO {
     }
 
     @Override
-    public void add(Client client) {
+    @SuppressWarnings("unchecked")
+    public List<Role> allRoles() {
         Session session = sessionFactory.getCurrentSession();
-        session.persist(client);
+        return session.createQuery("from Role").list();
     }
 
     @Override
-    public Client getById(Long id) {
+    public Role getById(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Client.class, id);
-    }
-
-    @Override
-    public Client findByUsername(String username) {
-        Session session = sessionFactory.getCurrentSession();
-        return (Client)session.createQuery("from Client where name=?").setParameter(0, username);
+        return session.get(Role.class, id);
     }
 }

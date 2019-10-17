@@ -11,10 +11,10 @@ public class Tariff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "title")
+    @Column(name = "tariff_title")
     private String title;
 
-    @Column(name = "price")
+    @Column(name = "tariff_price")
     private int price;
 
     public long getId() {

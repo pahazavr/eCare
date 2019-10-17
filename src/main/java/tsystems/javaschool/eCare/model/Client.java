@@ -2,17 +2,19 @@ package tsystems.javaschool.eCare.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "clients")
+@Table(name = "users")
 public class Client {
 
     @Id
-    @Column(name = "client_id")
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "surname")
@@ -22,7 +24,7 @@ public class Client {
     private Date birthdate;
 
     @Column(name = "passport")
-    private String passport;
+    private int passport;
 
     @Column(name = "address")
     private String address;
@@ -33,11 +35,47 @@ public class Client {
     @Column(name = "password")
     private String password;
 
-    public int getId() {
+    @Transient
+    private String confirmPassword;
+
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled;
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    @ManyToMany
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -65,11 +103,11 @@ public class Client {
         this.birthdate = birthdate;
     }
 
-    public String getPassport() {
+    public int getPassport() {
         return passport;
     }
 
-    public void setPassport(String passport) {
+    public void setPassport(int passport) {
         this.passport = passport;
     }
 

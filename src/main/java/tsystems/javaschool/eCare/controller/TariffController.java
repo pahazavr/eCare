@@ -13,7 +13,7 @@ import tsystems.javaschool.eCare.service.TariffService;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/tariffs", method = RequestMethod.GET)
+@RequestMapping(value = "/tariffs")
 public class TariffController {
 
     private TariffService tariffService;

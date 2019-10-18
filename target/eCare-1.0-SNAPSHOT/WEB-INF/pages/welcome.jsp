@@ -18,6 +18,8 @@
 </head>
 <body>
 
+<jsp:include page="header.jsp"/>
+
 <div class="container">
 
     <c:if test="${pageContext.request.userPrincipal.name != null}">

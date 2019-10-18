@@ -28,7 +28,10 @@ public class ClientValidator implements Validator {
         Client client = (Client) o;
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "Required");
-        if (client.getEmail().length() < 3 || client.getEmail().length() > 32) {
+
+        System.out.println(errors.getAllErrors());
+
+        if (client.getEmail().length() < 8 || client.getEmail().length() > 32) {
             errors.rejectValue("email", "Size.client.email");
         }
 
@@ -37,7 +40,7 @@ public class ClientValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "Required");
-        if (client.getPassword().length() < 3 || client.getPassword().length() > 32) {
+        if (client.getPassword().length() < 8 || client.getPassword().length() > 32) {
             errors.rejectValue("password", "Size.client.password");
         }
 

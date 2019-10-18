@@ -34,49 +34,64 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
-    public String registration(Model model) {
-        model.addAttribute("client", new Client());
-        return "registration";
+    public ModelAndView registration() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("client", new Client());
+        modelAndView.setViewName("registration");
+        return modelAndView;
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public String registration(@ModelAttribute("client") Client client, BindingResult bindingResult, Model model) {
+    public ModelAndView registration(@ModelAttribute("client") Client client, BindingResult bindingResult) {
+
+        ModelAndView modelAndView = new ModelAndView();
+
+        System.out.println(client.toString());
+
+        System.out.println("registration: before");
         clientValidator.validate(client, bindingResult);
 
+        System.out.println("registration: after");
+
         if (bindingResult.hasErrors()) {
-            return "registration";
+            modelAndView.setViewName("registration");
         }
 
         clientService.add(client);
         securityService.autoLogin(client.getEmail(), client.getConfirmPassword());
 
-        model.addAttribute(client);
-        return "redirect:/welcome";
+        modelAndView.addObject(client);
+        modelAndView.setViewName("redirect:/welcome");
+        return modelAndView;
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(Model model, String error, String logout) {
+    public ModelAndView login(String error, String logout) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login");
+
         if (error != null) {
-            model.addAttribute("error", "Name or password is incorrect.");
+            modelAndView.addObject("error", "Name or password is incorrect.");
         }
 
         if (logout != null) {
-            model.addAttribute("message", "Logged out successfully.");
+            modelAndView.addObject("message", "Logged out successfully.");
         }
 
-        return "login";
+        return modelAndView;
     }
 
     @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
-    public ModelAndView welcome(@ModelAttribute("client") Client client, Model model) {
+    public ModelAndView welcome() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("/welcome");
-        modelAndView.addObject(client);
+        modelAndView.setViewName("welcome");
         return modelAndView;
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public String admin(Model model) {
-        return "admin";
+    public ModelAndView admin() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("admin");
+        return modelAndView;
     }
 }

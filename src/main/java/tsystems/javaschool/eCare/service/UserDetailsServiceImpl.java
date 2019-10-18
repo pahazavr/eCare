@@ -16,7 +16,7 @@ import tsystems.javaschool.eCare.model.Role;
 import java.util.HashSet;
 import java.util.Set;
 
-@Service
+@Service("userDetailsServiceImpl")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private ClientDAO clientDAO;
@@ -38,6 +38,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
         }
 
-        return new org.springframework.security.core.userdetails.User(client.getName(), client.getPassword(), grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(client.getEmail(), client.getPassword(), grantedAuthorities);
     }
 }

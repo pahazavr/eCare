@@ -1,7 +1,7 @@
 package tsystems.javaschool.eCare.model;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,8 +20,8 @@ public class Client {
     @Column(name = "surname")
     private String surname;
 
-    @Column(name = "birthdate")
-    private Date birthdate;
+    @Column(name = "birthDate")
+    private Date birthDate;
 
     @Column(name = "passport")
     private int passport;
@@ -38,23 +38,12 @@ public class Client {
     @Transient
     private String confirmPassword;
 
-    @Column(name = "enabled", nullable = false)
-    private boolean enabled;
-
     public String getConfirmPassword() {
         return confirmPassword;
     }
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public Set<Role> getRoles() {
@@ -66,7 +55,7 @@ public class Client {
     }
 
     @ManyToMany
-    @JoinTable(name = "user_roles",
+    @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
@@ -95,12 +84,12 @@ public class Client {
         this.surname = surname;
     }
 
-    public Date getBirthdate() {
-        return birthdate;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirthdate(Date birthdate) {
-        this.birthdate = birthdate;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public int getPassport() {
@@ -137,7 +126,7 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Client [name=" + name + ", surname=" + surname + ", birthdate=" + birthdate + ", passport="+passport+"," +
+        return "Client [name=" + name + ", surname=" + surname + ", birthdate=" + birthDate + ", passport="+passport+"," +
                 " address=" + address + ", email=" + email + ", password="+password+"]";
     }
 }

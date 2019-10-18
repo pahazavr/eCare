@@ -22,13 +22,8 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-
-    private SecurityService securityService;
-
     @Autowired
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
+    private SecurityService securityService;
 
     private ClientValidator clientValidator;
 
@@ -45,6 +40,7 @@ public class ClientController {
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String registration(@ModelAttribute("client") Client client, BindingResult bindingResult, Model model) {
+        System.out.println("registration, POST: QQ");
         clientValidator.validate(client, bindingResult);
 
         if (bindingResult.hasErrors()) {
@@ -52,7 +48,7 @@ public class ClientController {
         }
 
         clientService.add(client);
-        securityService.autoLogin(client.getName(), client.getConfirmPassword());
+        securityService.autoLogin(client.getEmail(), client.getConfirmPassword());
 
         return "redirect:/welcome";
     }

@@ -27,17 +27,17 @@ public class ClientValidator implements Validator {
     public void validate(Object o, Errors errors) {
         Client client = (Client) o;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "Required");
-        if (client.getName().length() < 8 || client.getName().length() > 32) {
-            errors.rejectValue("name", "Size.client.name");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "Required");
+        if (client.getEmail().length() < 3 || client.getEmail().length() > 32) {
+            errors.rejectValue("email", "Size.client.email");
         }
 
-        if (clientService.findByUsername(client.getName()) != null) {
-            errors.rejectValue("name", "Duplicate.client.name");
+        if (clientService.findByUsername(client.getEmail()) != null) {
+            errors.rejectValue("email", "Duplicate.client.email");
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "Required");
-        if (client.getPassword().length() < 8 || client.getPassword().length() > 32) {
+        if (client.getPassword().length() < 3 || client.getPassword().length() > 32) {
             errors.rejectValue("password", "Size.client.password");
         }
 

@@ -14,7 +14,7 @@
 
     <title>Welcome</title>
 
-    <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${contextPath}/res/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
@@ -28,10 +28,12 @@
         <h2>Welcome ${pageContext.request.userPrincipal.name} | <a onclick="document.forms['logoutForm'].submit()">Logout</a>
         </h2>
 
+        <h2>${client.toString()}</h2>
+
     </c:if>
 
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="${contextPath}/resources/js/bootstrap.min.js"></script>
+<script src="${contextPath}/res/js/bootstrap.min.js"></script>
 </body>
 </html>

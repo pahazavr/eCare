@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 import tsystems.javaschool.eCare.model.Client;
 import tsystems.javaschool.eCare.service.ClientService;
 import tsystems.javaschool.eCare.service.SecurityService;
@@ -40,7 +41,6 @@ public class ClientController {
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String registration(@ModelAttribute("client") Client client, BindingResult bindingResult, Model model) {
-        System.out.println("registration, POST: QQ");
         clientValidator.validate(client, bindingResult);
 
         if (bindingResult.hasErrors()) {
@@ -50,6 +50,7 @@ public class ClientController {
         clientService.add(client);
         securityService.autoLogin(client.getEmail(), client.getConfirmPassword());
 
+        model.addAttribute(client);
         return "redirect:/welcome";
     }
 
@@ -67,8 +68,11 @@ public class ClientController {
     }
 
     @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
-    public String welcome(Model model) {
-        return "welcome";
+    public ModelAndView welcome(@ModelAttribute("client") Client client, Model model) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("/welcome");
+        modelAndView.addObject(client);
+        return modelAndView;
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)

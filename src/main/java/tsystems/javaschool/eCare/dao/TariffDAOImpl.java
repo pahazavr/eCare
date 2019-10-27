@@ -18,13 +18,6 @@ public class TariffDAOImpl implements TariffDAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<Tariff> allTariffs() {
-        Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("from Tariff").list();
-    }
-
-    @Override
     public void add(Tariff tariff) {
         Session session = sessionFactory.getCurrentSession();
         session.persist(tariff);
@@ -40,11 +33,30 @@ public class TariffDAOImpl implements TariffDAO {
     public void delete(Tariff tariff) {
         Session session = sessionFactory.getCurrentSession();
         session.delete(tariff);
+}
+
+    @Override
+    public List<Tariff> getAllTariffs() {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createNamedQuery("Tariff.getAllTariffs", Tariff.class).getResultList();
     }
 
     @Override
-    public Tariff getById(int id) {
+    public void deleteAllTariffs() {
+        Session session = sessionFactory.getCurrentSession();
+        session.createNamedQuery("Tariff.deleteAllTariffs").executeUpdate();
+    }
+
+    @Override
+    public Long getSize() {
+        Session session = sessionFactory.getCurrentSession();
+        return (Long)session.createNamedQuery("Tariff.size").getSingleResult();
+    }
+
+    @Override
+    public Tariff getTariffById(Long id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(Tariff.class, id);
     }
+
 }

@@ -8,6 +8,9 @@ import org.springframework.validation.Validator;
 import tsystems.javaschool.eCare.model.Client;
 import tsystems.javaschool.eCare.service.ClientService;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
 @Component
 public class ClientValidator implements Validator {
 
@@ -27,15 +30,34 @@ public class ClientValidator implements Validator {
     public void validate(Object o, Errors errors) {
         Client client = (Client) o;
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "Required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "Required");
+        if (client.getName().length() > 60) {
+            errors.rejectValue("name", "Size.client.name");
+        }
 
-        System.out.println(errors.getAllErrors());
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "surname", "Required");
+        if (client.getName().length() > 60) {
+            errors.rejectValue("surname", "Size.client.surname");
+        }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "birthDate", "Required");
+        try {
+            Date date = client.getBirthDate();
+        }
+        catch (Exception ex) {
+            errors.rejectValue("birthDate", "Convert.client.birthDate");
+        }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "address", "Required");
+        if (client.getAddress().length() > 60) {
+            errors.rejectValue("surname", "Size.client.address");
+        }
 
         if (client.getEmail().length() < 8 || client.getEmail().length() > 32) {
             errors.rejectValue("email", "Size.client.email");
         }
 
-        if (clientService.findByUsername(client.getEmail()) != null) {
+        if (clientService.findClientByEmail(client.getEmail()) != null) {
             errors.rejectValue("email", "Duplicate.client.email");
         }
 
@@ -44,6 +66,7 @@ public class ClientValidator implements Validator {
             errors.rejectValue("password", "Size.client.password");
         }
 
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "Required");
         if (!client.getConfirmPassword().equals(client.getPassword())) {
             errors.rejectValue("confirmPassword", "Different.client.password");
         }

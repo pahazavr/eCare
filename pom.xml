@@ -11,15 +11,13 @@
 
     <dependencies>
 
-        <!--
-            Подключение Spring MVC и Servlet-API
-        -->
+        <!--Spring MVC-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>5.2.0.RELEASE</version>
         </dependency>
-
+        <!--Servlet-API-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -27,33 +25,27 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--
-            Подключение JSTL
-        -->
+        <!--JSTL-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
 
-        <!--
-            Подключение драйвера MySQL
-        -->
+        <!--driver MySQL-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.17</version>
         </dependency>
 
-        <!--
-            Подключение ORM и Hibernate
-        -->
+        <!-- ORM-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>5.2.0.RELEASE</version>
         </dependency>
-
+        <!--Hibernate-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -78,16 +70,14 @@
             <version>0.9.5.4</version>
         </dependency>
 
-        <!--
-            Подключение tomcat-dbcp
-        -->
+        <!--tomcat-dbcp-->
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-dbcp</artifactId>
             <version>9.0.26</version>
         </dependency>
 
-        <!-- Spring Security зависимости -->
+        <!-- Spring Security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
@@ -100,11 +90,18 @@
             <version>5.1.6.RELEASE</version>
         </dependency>
 
-        <!-- logback -->
+        <!-- log4j -->
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.3.0-alpha4</version>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.7</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

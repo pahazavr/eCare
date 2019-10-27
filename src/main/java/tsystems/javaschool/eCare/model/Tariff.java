@@ -4,12 +4,18 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tariffs")
+@NamedQueries(
+        {
+                @NamedQuery(name = "Tariff.getAllTariffs", query = "SELECT t FROM Tariff t"),
+                @NamedQuery(name = "Tariff.deleteAllTariffs", query = "DELETE FROM Tariff"),
+                @NamedQuery(name = "Tariff.size", query="SELECT count(t) FROM Tariff t")
+        })
 public class Tariff {
 
     @Id
     @Column(name = "tariff_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "tariff_title")
     private String title;
@@ -17,11 +23,19 @@ public class Tariff {
     @Column(name = "tariff_price")
     private int price;
 
-    public long getId() {
+    public Tariff() {
+    }
+
+    public Tariff(String title, int price) {
+        this.title = title;
+        this.price = price;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

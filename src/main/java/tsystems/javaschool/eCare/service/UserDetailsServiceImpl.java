@@ -16,7 +16,7 @@ import tsystems.javaschool.eCare.model.Role;
 import java.util.HashSet;
 import java.util.Set;
 
-@Service("userDetailsServiceImpl")
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private ClientDAO clientDAO;
@@ -28,14 +28,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    // предоставляются разрешения для данного пользователя
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Client client = clientDAO.findByUsername(username);
+    // предоставляются разрешения для данного пользователя при входе
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Client client = clientDAO.findClientByEmail(email);
 
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
         for (Role role : client.getRoles()) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+            grantedAuthorities.add(new SimpleGrantedAuthority(role.getTitle()));
         }
 
         return new org.springframework.security.core.userdetails.User(client.getEmail(), client.getPassword(), grantedAuthorities);

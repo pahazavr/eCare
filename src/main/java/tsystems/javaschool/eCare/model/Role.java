@@ -13,7 +13,7 @@ public class Role {
     private Long id;
 
     @Column(name = "role_title")
-    private String name;
+    private String title;
 
     @ManyToMany(mappedBy = "roles")
     private Set<Client> clients;
@@ -26,12 +26,12 @@ public class Role {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Set<Client> getClients() {
@@ -46,7 +46,7 @@ public class Role {
     public String toString() {
         return "Role{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + title + '\'' +
                 ", clients=" + clients +
                 '}';
     }

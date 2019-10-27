@@ -19,14 +19,14 @@ public class TariffController {
     private TariffService tariffService;
 
     @Autowired
-    public void setFilmService(TariffService tariffService) {
+    public void setTariffService(TariffService tariffService) {
         this.tariffService = tariffService;
     }
 
     // Загрузка всех тарифов на главной странице
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView allTariffs() {
-        List<Tariff> tariffs = tariffService.allTariffs();
+        List<Tariff> tariffs = tariffService.getAllTariffs();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admin/tariffs");
         modelAndView.addObject("tariffsList", tariffs);
@@ -35,8 +35,8 @@ public class TariffController {
 
     // Редактирование тарифа с переходом на страницу "/edit/{id}"
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-    public ModelAndView editPage(@PathVariable("id") int id) {
-        Tariff tariff = tariffService.getById(id);
+    public ModelAndView editPage(@PathVariable("id") Long id) {
+        Tariff tariff = tariffService.getTariffById(id);
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("editTariff");
         modelAndView.addObject("tariff", tariff);
@@ -53,11 +53,10 @@ public class TariffController {
 
     // После нажатия на кнопку delete
     @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-    public ModelAndView deleteTariff(@PathVariable("id") int id) {
+    public ModelAndView deleteTariff(@PathVariable("id") Long id) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("redirect:/");
-        Tariff tariff = tariffService.getById(id);
-        tariffService.delete(tariff);
+        tariffService.delete(id);
         return modelAndView;
     }
 

@@ -18,7 +18,7 @@
 
 <body>
 <!-- Default form register -->
-<form:form method="POST" modelAttribute="client" class="form-signin text-center border border-light p-5">
+<form:form method="POST" modelAttribute="newClient" class="form-signin text-center border border-light p-5">
     <p class="h4 mb-4">Sign up</p>
     <div class="form-row mb-4">
         <div class="col">
@@ -35,8 +35,8 @@
         <div class="col">
             <!-- Surname -->
             <spring:bind path="surname">
-                <form:label path="surname">Surname:</form:label>
                 <div class="form-group ${status.error ? 'has-error' : ''}">
+                <form:label path="surname">Surname:</form:label>
                     <form:input type="text" id="defaultRegisterFormLastName" path="surname" class="form-control"
                                 placeholder="Last name"/>
                     <form:errors path="surname"/>
@@ -103,7 +103,7 @@
     </spring:bind>
 
     <!-- Sign up button -->
-    <button class="btn btn-info my-4 btn-block" type="submit">Sign in</button>
+    <button class="btn btn-info my-4 btn-block" type="submit">Sign up</button>
 </form:form>
 
 <!-- Default form register -->

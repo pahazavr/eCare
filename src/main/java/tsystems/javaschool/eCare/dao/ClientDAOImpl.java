@@ -18,44 +18,6 @@ public class ClientDAOImpl implements ClientDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    /*
-    @Override
-    protected Client doSaveOrUpdate(Client client) {
-        Session session = sessionFactory.getCurrentSession();
-        return (Client) session.merge(client);
-    }
-
-    @Override
-    protected Client doGetById(Long id) {
-        Session session = sessionFactory.getCurrentSession();
-        return session.get(Client.class, id);
-    }
-
-    @Override
-    protected void doDelete(Client client) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(client);
-    }
-
-    @Override
-    protected List<Client> doGetAll() {
-        Session session = sessionFactory.getCurrentSession();
-        return session.createNamedQuery("Client.getAllClients", Client.class).getResultList();
-    }
-
-    @Override
-    protected void doDeleteAll() {
-        Session session = sessionFactory.getCurrentSession();
-        session.createNamedQuery("Client.deleteAllClients").executeUpdate();
-    }
-
-    @Override
-    protected Long doSize() {
-        Session session = sessionFactory.getCurrentSession();
-        return (Long)session.createNamedQuery("Client.size").getSingleResult();
-    }
-    */
-
     @Override
     public void add(Client client) {
         Session session = sessionFactory.getCurrentSession();
@@ -101,8 +63,8 @@ public class ClientDAOImpl implements ClientDAO {
     @Override
     public Client findClientByEmail(String email) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("FROM tsystems.javaschool.eCare.model.Client WHERE email = ?");
-        query.setParameter(0, email);
+        Query query = session.createNamedQuery("Client.findClientByEmail", Client.class);
+        query.setParameter("email", email);
         return (Client) query.getSingleResult();
     }
 

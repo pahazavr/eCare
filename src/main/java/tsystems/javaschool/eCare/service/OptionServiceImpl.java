@@ -9,9 +9,7 @@ import tsystems.javaschool.eCare.dao.OptionDAO;
 import tsystems.javaschool.eCare.dao.TariffDAO;
 import tsystems.javaschool.eCare.model.Option;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class OptionServiceImpl implements OptionService {

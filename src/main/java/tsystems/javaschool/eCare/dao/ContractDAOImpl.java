@@ -74,6 +74,10 @@ public class ContractDAOImpl implements ContractDAO {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createNamedQuery("Contract.getAllContractsForClient", Contract.class)
                 .setParameter("id", id);
+        List<Contract> contracts = query.getResultList();
+        for(Contract c: contracts) {
+            System.out.println(c.toString());
+        }
         return query.getResultList();
     }
 
@@ -81,7 +85,7 @@ public class ContractDAOImpl implements ContractDAO {
     public void deleteAllContractsForClient(Long id) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createNamedQuery("Contract.deleteAllContractsForClient")
-                .setParameter(1, id);
+                .setParameter("id", id);
         query.executeUpdate();
     }
 }

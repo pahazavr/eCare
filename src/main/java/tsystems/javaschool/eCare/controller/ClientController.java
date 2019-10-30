@@ -6,11 +6,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import tsystems.javaschool.eCare.model.Client;
 import tsystems.javaschool.eCare.service.ClientService;
@@ -21,10 +23,12 @@ import tsystems.javaschool.eCare.util.Role;
 import tsystems.javaschool.eCare.validator.ClientValidator;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Date;
 import java.util.Collection;
 
 @Controller
+@SessionAttributes("client")
 public class ClientController {
 
     private static Logger logger = Logger.getLogger(ClientController.class);
@@ -52,63 +56,57 @@ public class ClientController {
 
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
-    public ModelAndView registration() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("client", new Client());
-        modelAndView.setViewName("registration");
-        return modelAndView;
+    public String registration(Model model) {
+        model.addAttribute("newClient", new Client());
+        return "registration";
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public ModelAndView registration(@ModelAttribute("client") Client client, BindingResult bindingResult) {
+    public String registration(@ModelAttribute("newClient") Client client, HttpSession httpSession, BindingResult bindingResult) {
 
-        ModelAndView modelAndView = new ModelAndView();
         clientValidator.validate(client, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            modelAndView.setViewName("registration");
-            return modelAndView;
+            return "registration";
         }
-
         clientService.add(client);
         securityService.autoLogin(client.getEmail(), client.getConfirmPassword());
 
-        modelAndView.addObject(client);
-        modelAndView.setViewName("redirect:/welcome");
-        return modelAndView;
+        //Role role = client.getRoles();
+        httpSession.setAttribute("client", client);
+        //httpSession.setAttribute("role", role);
+        return "redirect:/welcome";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView login(String error, String logout) {
-        ModelAndView modelAndView = new ModelAndView();
+    public String login(Model model, HttpSession httpSession, String error, String logout) {
 
         if (error != null) {
-            modelAndView.addObject("error", "Name or password is incorrect.");
+            model.addAttribute("error", "Name or password is incorrect.");
         }
 
         if (logout != null) {
-            modelAndView.addObject("message", "Logged out successfully.");
+            model.addAttribute("message", "Logged out successfully.");
         }
 
-        modelAndView.setViewName("login");
-        return modelAndView;
+        return "login";
     }
 
     @RequestMapping(value = {"/", "/welcome"}, method = RequestMethod.GET)
-    public String welcome(HttpServletRequest req) {
+    public String welcome(Model model, HttpSession httpSession) {
         String role = null;
         Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>)SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         for (GrantedAuthority authority : authorities) {
             role = authority.getAuthority();
         }
-        req.setAttribute("role", role);
+        model.addAttribute("role", role);
         try {
             if (role.equals(Role.ROLE_USER.toString())) {
                 UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 Client client = clientService.findClientByEmail(userDetails.getUsername());
-                req.setAttribute("client", client);
-                req.setAttribute("pagename", PageName.CLIENT.toString());
-                req.setAttribute("successmessage", "Client " + client.getName() + " loaded from database.");
+                httpSession.setAttribute("client", client);
+                //model.addAttribute("pagename", PageName.CLIENT.toString());
+                //model.addAttribute("successmessage", "Client " + client.getName() + " loaded from database.");
                 logger.info("User(client): " + client + " login in application.");
                 return "welcome";
             }
@@ -120,48 +118,35 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/profile", method = RequestMethod.POST)
-    public String profile(HttpServletRequest req) {
-        long clientId = Long.parseLong(req.getParameter("id"));
-        ControllerUtil.setRole(req);
-        Client client = clientService.getClientById(clientId);
-        req.setAttribute("client", client);
-        req.setAttribute("pagename", PageName.CLIENT.toString());
+    public String profile() {
         logger.info("User went to profile page.");
         return "client/profile";
     }
 
     @RequestMapping(value = "/client/editProfile", method = RequestMethod.POST)
-    public String editProfile(HttpServletRequest req) {
-        long clientId = Long.parseLong(req.getParameter("id"));
-        ControllerUtil.setRole(req);
-        Client client = clientService.getClientById(clientId);
-        req.setAttribute("client", client);
-        req.setAttribute("pagename", PageName.CLIENT.toString());
+    public String editProfile(Model model, @ModelAttribute Client client) {
         logger.info("User went to edit profile page.");
+        model.addAttribute("editClient", client);
         return "client/editProfile";
     }
 
     @RequestMapping(value = "/client/updateProfile", method = RequestMethod.POST)
-    public String updateProfile(HttpServletRequest req) {
-        long clientId = Long.parseLong(req.getParameter("id"));
-        ControllerUtil.setRole(req);
-        Client client = clientService.getClientById(clientId);
+    public String updateProfile(@ModelAttribute Client client, HttpSession httpSession, HttpServletRequest request) {
         try {
-            client.setName(req.getParameter("name"));
-            client.setSurname(req.getParameter("surname"));
-            client.setPassport(Integer.parseInt(req.getParameter("passport")));
-            client.setAddress(req.getParameter("address"));
-            client.setBirthDate(Date.valueOf(req.getParameter("birthDate")));
+            client.setName(request.getParameter("name"));
+            client.setSurname(request.getParameter("surname"));
+            client.setPassport(Integer.parseInt(request.getParameter("passport")));
+            client.setAddress(request.getParameter("address"));
+            client.setBirthDate(Date.valueOf(request.getParameter("birthDate")));
             clientService.edit(client);
-            req.setAttribute("client", client);
-            req.setAttribute("pagename", PageName.CLIENT.toString());
+            //httpSession.setAttribute("client", client);
             logger.info("User "+ client +" update profile.");
             return "client/profile";
         } catch (Exception ecx) {
-            req.setAttribute("client", client);
-            req.setAttribute("pagename", PageName.EDIT_CLIENT.toString());
-            req.setAttribute("errormessage", ecx.getMessage());
-            return "client/editClient";
+            request.setAttribute("client", client);
+            request.setAttribute("pagename", PageName.EDIT_CLIENT.toString());
+            request.setAttribute("errormessage", ecx.getMessage());
+            return "client/editProfile";
         }
     }
 

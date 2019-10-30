@@ -4,7 +4,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import tsystems.javaschool.eCare.model.Client;
 import tsystems.javaschool.eCare.model.Role;
 
 import java.util.List;

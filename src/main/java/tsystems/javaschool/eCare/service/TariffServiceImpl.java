@@ -8,9 +8,7 @@ import tsystems.javaschool.eCare.ECareException;
 import tsystems.javaschool.eCare.dao.TariffDAO;
 import tsystems.javaschool.eCare.model.Tariff;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class TariffServiceImpl implements TariffService {

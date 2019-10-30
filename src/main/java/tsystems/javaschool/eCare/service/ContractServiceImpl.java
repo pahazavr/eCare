@@ -204,9 +204,9 @@ public class ContractServiceImpl implements ContractService {
             //If contract not blocked by client already.
             if(!contract.isBlockedByClient()) {
                 contract.setBlockedByClient(true);
-                Client client = contract.getClient();
-                client.getContracts().add(contract);
-                clientService.edit(client);
+//                Client client = contract.getClient();
+//                client.getContracts().add(contract);
+                edit(contract);
                 logger.info("Contract " + contract + " is blocked by client.");
             }
             else {
@@ -231,9 +231,10 @@ public class ContractServiceImpl implements ContractService {
             //If contract blocked by client.
             if(contract.isBlockedByClient()) {
                 contract.setBlockedByClient(false);
-                Client client = contract.getClient();
-                client.getContracts().add(contract);
-                clientService.edit(client);
+//                Client client = contract.getClient();
+//                client.getContracts().add(contract);
+//                clientService.edit(client);
+                edit(contract);
                 logger.info("Contract " + contract + " is unblocked by client.");
             }
             else {

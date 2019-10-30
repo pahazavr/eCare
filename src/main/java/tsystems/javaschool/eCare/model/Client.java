@@ -6,24 +6,24 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "clients")
 @NamedQueries(
         {
-                @NamedQuery(name = "Client.getAllClients", query = "SELECT cl FROM Client cl WHERE Role.title = 'ROLE_USER'"),
-                @NamedQuery(name = "Client.findClientByLoginAndPassword", query = "SELECT cl FROM Client cl WHERE cl.email = :login AND cl.password = :password"),
-                @NamedQuery(name = "Client.findClientByNumber", query = "SELECT cnt.client FROM Contract cnt WHERE cnt.number = :number"),
+//                @NamedQuery(name = "Client.getAllClients", query = "SELECT cl FROM Client cl WHERE Role.title = 'ROLE_USER'"),
+//                @NamedQuery(name = "Client.findClientByLoginAndPassword", query = "SELECT cl FROM Client cl WHERE cl.email = :login AND cl.password = :password"),
+//                @NamedQuery(name = "Client.findClientByNumber", query = "SELECT cnt.client FROM Contract cnt WHERE cnt.number = :number"),
                 @NamedQuery(name = "Client.findClientByEmail", query = "SELECT cl FROM Client cl WHERE cl.email = :email"),
-                @NamedQuery(name = "Client.deleteAllClients", query = "DELETE FROM Client WHERE Role.title = 'ROLE_USER'"),
-                @NamedQuery(name = "Client.size", query="SELECT count(cl) FROM Client cl WHERE Role.title = 'ROLE_USER'")
+//                @NamedQuery(name = "Client.deleteAllClients", query = "DELETE FROM Client WHERE Role.title = 'ROLE_USER'"),
+//                @NamedQuery(name = "Client.size", query="SELECT count(cl) FROM Client cl WHERE Role.title = 'ROLE_USER'")
         })
 public class Client {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "client_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name")
     private String name;
 
     @Column(name = "surname")
@@ -51,12 +51,12 @@ public class Client {
     private String confirmPassword;
 
     @ManyToMany
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "client_role",
+            joinColumns = @JoinColumn(name = "client_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "client", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Contract> contracts = new HashSet<>();
 
     public Client() {

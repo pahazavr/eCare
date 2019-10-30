@@ -6,15 +6,15 @@ import java.util.Set;
 
 @Entity
 @Table(name = "options")
-@NamedQueries(
-        {
-                @NamedQuery(name = "Option.getAllOptions", query = "SELECT o FROM Option o"),
-                @NamedQuery(name = "Option.findOptionByTitleAndTariffId", query = "SELECT o FROM Option o WHERE o.title = :title AND o.tariff.id = :id"),
-                @NamedQuery(name = "Option.getAllOptionsForTariff", query = "SELECT o FROM Option o WHERE o.tariff.id = :id"),
-                @NamedQuery(name = "Option.deleteAllOptions", query = "DELETE FROM Option"),
-                @NamedQuery(name = "Option.deleteAllOptionsForTariff", query = "DELETE FROM Option WHERE tariff.id = ?1"),
-                @NamedQuery(name = "Option.size", query="SELECT count(o) FROM Option o")
-        })
+//@NamedQueries(
+//        {
+//                @NamedQuery(name = "Option.getAllOptions", query = "SELECT o FROM Option o"),
+//                @NamedQuery(name = "Option.findOptionByTitleAndTariffId", query = "SELECT o FROM Option o WHERE o.title = :title AND o.tariff.id = :id"),
+//                @NamedQuery(name = "Option.getAllOptionsForTariff", query = "SELECT o FROM Option o WHERE o.tariff.id = :id"),
+//                @NamedQuery(name = "Option.deleteAllOptions", query = "DELETE FROM Option"),
+//                @NamedQuery(name = "Option.deleteAllOptionsForTariff", query = "DELETE FROM Option WHERE tariff.id = :id"),
+//                @NamedQuery(name = "Option.size", query="SELECT count(op) FROM Option op")
+//        })
 public class Option {
     @Id
     @Column(name = "option_id")

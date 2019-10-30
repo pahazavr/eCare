@@ -19,49 +19,71 @@
 <div class="outer-wrapper container">
     <jsp:include page="../fragments/header.jsp"/>
 
-    <form:form method="POST" action="${contextPath}/client/updateProfile"
+    <form:form method="POST"
+               modelAttribute="editClient"
+               action="${contextPath}/client/updateProfile"
                class="form-signin text-center border border-light p-5"
                enctype="application/x-www-form-urlencoded">
         <p class="h4 mb-4">Edit profile of ${client.getFullName()}</p>
         <div class="form-row mb-4">
             <div class="col">
                 <!--First name-->
-                <div class="form-group ${status.error ? 'has-error' : ''}">
-                    <label>First name:</label>
-                    <input type="text" id="defaultRegisterFormFirstName" name="name"
-                                class="form-control" placeholder="First name" autofocus="true" value="${client.getName()}"/>
-                </div>
+                <spring:bind path="name">
+                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                        <form:label path="name">First name:</form:label>
+                        <form:input type="text" id="defaultRegisterFormFirstName"
+                                    class="form-control" placeholder="First name"
+                                    autofocus="true" value="${client.getName()}" path="name"/>
+                        <form:errors path="name" cssClass="error" element="div"/>
+                    </div>
+                </spring:bind>
             </div>
             <div class="col">
                 <!-- Surname -->
-                <div class="form-group ${status.error ? 'has-error' : ''}">
-                    <label>Surname:</label>
-                    <input type="text" id="defaultRegisterFormLastName" name="surname" class="form-control"
-                                placeholder="Suraname" value="${client.getSurname()}"/>
-                </div>
+                <spring:bind path="surname">
+                    <div class="form-group ${status.error ? 'has-error' : ''}">
+                        <form:label path="surname">Surname:</form:label>
+                        <form:input type="text" id="defaultRegisterFormLastName"
+                                    class="form-control" placeholder="Surname"
+                                    value="${client.getSurname()}" path="surname"/>
+                        <form:errors path="surname" cssClass="error" element="div"/>
+                    </div>
+                </spring:bind>
             </div>
         </div>
 
         <!-- BirthDate -->
-        <div class="form-group ${status.error ? 'has-error' : ''}">
-            <label>Birth Date:</label>
-            <input type="text" name="birthDate" class="form-control" placeholder="Your bithdate" value="${client.getBirthDate()}"/>
-        </div>
+        <spring:bind path="birthDate">
+            <div class="form-group ${status.error ? 'has-error' : ''}">
+                <form:label path="birthDate">Birth Date:</form:label>
+                <form:input type="text" class="form-control"
+                            placeholder="Your bithdate" value="${client.getBirthDate()}" path="birthDate"/>
+                <form:errors path="birthDate" cssClass="error" element="div"/>
+            </div>
+        </spring:bind>
 
         <!-- Passport -->
-        <div class="form-group ${status.error ? 'has-error' : ''}">
-            <label>Passport:</label>
-            <input type="text" name="passport" class="form-control" placeholder="Your passport" value="${client.getPassport()}"/>
-        </div>
+        <spring:bind path="passport">
+            <div class="form-group ${status.error ? 'has-error' : ''}">
+                <form:label path="passport">Passport:</form:label>
+                <form:input type="text"
+                            class="form-control" placeholder="Your passport"
+                            value="${client.getPassport()}" path="passport"/>
+                <form:errors path="passport" cssClass="error" element="div"/>
+            </div>
+        </spring:bind>
 
         <!-- Address -->
-        <div class="form-group ${status.error ? 'has-error' : ''}">
-            <label>Address:</label>
-            <input type="text" name="address" class="form-control" placeholder="Your address" value="${client.getAddress()}"/>
-        </div>
+        <spring:bind path="address">
+            <div class="form-group ${status.error ? 'has-error' : ''}">
+                <form:label path="address">Address:</form:label>
+                <form:input type="text" class="form-control" placeholder="Your address"
+                            value="${client.getAddress()}" path="address"/>
+                <form:errors path="address" cssClass="error" element="div"/>
+            </div>
+        </spring:bind>
 
         <!-- Hidden parameters -->
-        <input type="hidden" name="id" value="${client.id}">
         <input type="hidden" name="sessionRole" value=${role}>
 
         <!-- Save button -->

@@ -1,5 +1,7 @@
 package tsystems.javaschool.eCare.model;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,12 +10,12 @@ import java.util.Set;
 @Table(name = "contracts")
 @NamedQueries(
         {
-                @NamedQuery(name = "Contract.getAllContracts", query = "SELECT cnt FROM Contract cnt"),
-                @NamedQuery(name = "Contract.findContractByNumber", query = "SELECT cnt FROM Contract cnt WHERE cnt.number = :number"),
+//                @NamedQuery(name = "Contract.getAllContracts", query = "SELECT cnt FROM Contract cnt"),
+//                @NamedQuery(name = "Contract.findContractByNumber", query = "SELECT cnt FROM Contract cnt WHERE cnt.number = :number"),
                 @NamedQuery(name = "Contract.getAllContractsForClient", query = "SELECT cnt FROM Contract cnt WHERE cnt.client.id = :id"),
-                @NamedQuery(name = "Contract.deleteAllContracts", query="DELETE FROM Contract"),
-                @NamedQuery(name = "Contract.deleteAllContractsForClient", query = "DELETE FROM Contract WHERE client.id = ?1"),
-                @NamedQuery(name = "Contract.size", query="SELECT count(cnt) FROM Contract cnt")
+//                @NamedQuery(name = "Contract.deleteAllContracts", query="DELETE FROM Contract"),
+//                @NamedQuery(name = "Contract.deleteAllContractsForClient", query = "DELETE FROM Contract WHERE client.id = :id"),
+//                @NamedQuery(name = "Contract.size", query="SELECT count(cnt) FROM Contract cnt")
         })
 public class Contract {
     @Id
@@ -33,15 +35,18 @@ public class Contract {
     private Client client;
 
     @Column(name = "blocked_by_client")
-    private boolean isBlockedByClient = false;
+    private Boolean isBlockedByClient = false;
 
     @Column(name = "blocked_by_operator")
-    private boolean isBlockedByOperator = false;
+    private Boolean isBlockedByOperator = false;
 
-    @ManyToMany
-    @JoinTable(name = "connected_options",
-            joinColumns = @JoinColumn(name = "contract_id"),
-            inverseJoinColumns = @JoinColumn(name = "option_id"))
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable
+            (
+                    name="connected_options",
+                    joinColumns={ @JoinColumn(name="contract_id", referencedColumnName="contract_id") },
+                    inverseJoinColumns={ @JoinColumn(name="option_id", referencedColumnName="option_id") }
+            )
     private Set<Option> options = new HashSet<>();
 
     public Contract() {
@@ -65,11 +70,11 @@ public class Contract {
         this.id = id;
     }
 
-    public long getNumber() {
+    public Long getNumber() {
         return number;
     }
 
-    public void setNumber(long number) {
+    public void setNumber(Long number) {
         this.number = number;
     }
 
@@ -89,22 +94,6 @@ public class Contract {
         this.client = client;
     }
 
-    public boolean isBlockedByClient() {
-        return isBlockedByClient;
-    }
-
-    public void setBlockedByClient(boolean blockedByClient) {
-        isBlockedByClient = blockedByClient;
-    }
-
-    public boolean isBlockedByOperator() {
-        return isBlockedByOperator;
-    }
-
-    public void setBlockedByOperator(boolean blockedByOperator) {
-        isBlockedByOperator = blockedByOperator;
-    }
-
     public Set<Option> getOptions() {
         return options;
     }
@@ -119,5 +108,34 @@ public class Contract {
 
     public void deleteOption(Option op) {
         this.options.remove(op);
+    }
+
+    public Boolean isBlockedByClient() {
+        return isBlockedByClient;
+    }
+
+    public void setBlockedByClient(Boolean blockedByClient) {
+        isBlockedByClient = blockedByClient;
+    }
+
+    public Boolean isBlockedByOperator() {
+        return isBlockedByOperator;
+    }
+
+    public void setBlockedByOperator(Boolean blockedByOperator) {
+        isBlockedByOperator = blockedByOperator;
+    }
+
+    @Override
+    public String toString() {
+        return "Contract{" +
+                "id=" + id +
+                ", number=" + number +
+                ", tariff=" + tariff +
+                ", client=" + client +
+                ", isBlockedByClient=" + isBlockedByClient +
+                ", isBlockedByOperator=" + isBlockedByOperator +
+                ", options=" + options +
+                '}';
     }
 }

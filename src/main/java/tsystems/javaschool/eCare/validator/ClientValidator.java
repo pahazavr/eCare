@@ -57,9 +57,9 @@ public class ClientValidator implements Validator {
             errors.rejectValue("email", "Size.client.email");
         }
 
-        if (clientService.findClientByEmail(client.getEmail()) != null) {
-            errors.rejectValue("email", "Duplicate.client.email");
-        }
+//        if (clientService.findClientByEmail(client.getEmail()) != null) {
+//            errors.rejectValue("email", "Duplicate.client.email");
+//        }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "Required");
         if (client.getPassword().length() < 8 || client.getPassword().length() > 32) {

@@ -45,7 +45,6 @@
 
     <form:form id="EditProfileForm" method="POST" action="${contextPath}/client/editProfile"
                enctype="application/x-www-form-urlencoded">
-        <input type="hidden" name="id" value="${client.id}">
         <input type="hidden" name="sessionRole" value=${role}>
     </form:form>
 

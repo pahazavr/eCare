@@ -13,6 +13,12 @@ public interface ContractService {
     void delete(Long id);
     Contract getContractById(Long id);
     Contract findContractByNumber(Long number);
+
+    /**
+     * Получает список контрактов для данного клиента
+     * @param id clientId.
+     * @return List of received contracts.
+     */
     List<Contract> getAllContractsForClient(Long id);
     void deleteAllContracts();
     void deleteAllContractsForClient(Long id);

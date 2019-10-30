@@ -20,25 +20,34 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <c:url value="/contracts/all" var="contracts"/>
-                <a class="nav-link" href="${contracts}">Contracts</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" title="Add new contract" href="#" onclick="document.forms['profileForm'].submit()">Profile</a>
+                <a class="nav-link" title="See all contracts" href="#"
+                   onclick="document.forms['contractsForm'].submit()">Contracts</a>
             </li>
             <li class="nav-item">
                 <c:url value="#" var="some"/>
                 <a class="nav-link" href="${some}">Something</a>
             </li>
             <li class="nav-item">
-                <button class="btn btn-outline-primary btn-rounded waves-effect" type="submit" onclick="document.forms['logoutForm'].submit()">Logout</button></a>
+                <a class="nav-link" title="Edit profile" href="#"
+                   onclick="document.forms['profileForm'].submit()">${client.getEmail()}</a>
+            </li>
+            <li class="nav-item">
+                <button class="btn btn-outline-primary btn-rounded waves-effect" type="submit"
+                        onclick="document.forms['logoutForm'].submit()">Logout</button></a>
             </li>
         </ul>
     </div>
 </nav>
 
-<form:form id="profileForm" method="POST" action="${contextPath}/client/profile" enctype="application/x-www-form-urlencoded">
-    <input type="hidden" name="id" value="${client.id}">
+<form:form id="profileForm" method="POST"
+           action="${contextPath}/client/profile"
+           enctype="application/x-www-form-urlencoded">
+    <input type="hidden" name="sessionRole" value=${role}>
+</form:form>
+
+<form:form id="contractsForm" method="GET"
+           action="${contextPath}/client/viewAllContractsForClient"
+           enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="sessionRole" value=${role}>
 </form:form>
 

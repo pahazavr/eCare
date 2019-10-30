@@ -73,7 +73,7 @@ public class OptionDAOImpl implements OptionDAO {
     public void deleteAllOptionsForTariff(Long id) {
         Session session = sessionFactory.getCurrentSession();
         session.createNamedQuery("Option.deleteAllOptionsForTariff")
-                .setParameter(1, id)
+                .setParameter("id", id)
                 .executeUpdate();
     }
 

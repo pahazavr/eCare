@@ -3,6 +3,7 @@ package tsystems.javaschool.eCare.model;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,51 +18,30 @@ import java.util.Set;
 //                @NamedQuery(name = "Contract.deleteAllContractsForClient", query = "DELETE FROM Contract WHERE client.id = :id"),
 //                @NamedQuery(name = "Contract.size", query="SELECT count(cnt) FROM Contract cnt")
         })
-public class Contract {
-    @Id
-    @Column(name = "contract_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Contract implements Serializable {
+
     private Long id;
-
-    @Column(name = "number")
     private Long number;
-
-    @ManyToOne
-    @JoinColumn(name = "tariff_id")
+    private Boolean blockedByClient;
+    private Boolean blockedByOperator;
     private Tariff tariff;
-
-    @ManyToOne
-    @JoinColumn(name = "client_id")
     private Client client;
-
-    @Column(name = "blocked_by_client")
-    private Boolean isBlockedByClient = false;
-
-    @Column(name = "blocked_by_operator")
-    private Boolean isBlockedByOperator = false;
-
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinTable
-            (
-                    name="connected_options",
-                    joinColumns={ @JoinColumn(name="contract_id", referencedColumnName="contract_id") },
-                    inverseJoinColumns={ @JoinColumn(name="option_id", referencedColumnName="option_id") }
-            )
     private Set<Option> options = new HashSet<>();
 
     public Contract() {
     }
 
-    public Contract(Long number, Tariff tariff, Client client, boolean isBlockedByClient, boolean isBlockedByOperator,
-                    Set<Option> options) {
+    public Contract(Long number, Tariff tariff, Client client, boolean isBlockedByClient, boolean isBlockedByOperator) {
         this.number = number;
         this.tariff = tariff;
         this.client = client;
-        this.isBlockedByClient = isBlockedByClient;
-        this.isBlockedByOperator = isBlockedByOperator;
-        this.options = options;
+        this.blockedByClient = isBlockedByClient;
+        this.blockedByOperator = isBlockedByOperator;
     }
 
+    @Id
+    @Column(name = "contract_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -70,6 +50,7 @@ public class Contract {
         this.id = id;
     }
 
+    @Column(name = "number")
     public Long getNumber() {
         return number;
     }
@@ -78,6 +59,8 @@ public class Contract {
         this.number = number;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "tariff_id")
     public Tariff getTariff() {
         return tariff;
     }
@@ -86,6 +69,8 @@ public class Contract {
         this.tariff = tariff;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "client_id")
     public Client getClient() {
         return client;
     }
@@ -94,6 +79,13 @@ public class Contract {
         this.client = client;
     }
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable
+            (
+                    name="connected_options",
+                    joinColumns={ @JoinColumn(name="contract_id", referencedColumnName="contract_id") },
+                    inverseJoinColumns={ @JoinColumn(name="option_id", referencedColumnName="option_id") }
+            )
     public Set<Option> getOptions() {
         return options;
     }
@@ -102,40 +94,42 @@ public class Contract {
         this.options = options;
     }
 
-    public void addOption(Option op) {
-        this.options.add(op);
+    public void addOption(Option option) {
+        this.options.add(option);
     }
 
-    public void deleteOption(Option op) {
-        this.options.remove(op);
+    public void deleteOption(Option option) {
+        this.options.remove(option);
     }
 
+    @Column(name = "blocked_by_client")
     public Boolean isBlockedByClient() {
-        return isBlockedByClient;
+        return blockedByClient;
     }
 
     public void setBlockedByClient(Boolean blockedByClient) {
-        isBlockedByClient = blockedByClient;
+//        if(!blockedByClient && blockedByOperator) return;
+        this.blockedByClient = blockedByClient;
     }
 
+    @Column(name = "blocked_by_operator")
     public Boolean isBlockedByOperator() {
-        return isBlockedByOperator;
+        return blockedByOperator;
     }
 
     public void setBlockedByOperator(Boolean blockedByOperator) {
-        isBlockedByOperator = blockedByOperator;
+        this.blockedByOperator = blockedByOperator;
     }
 
     @Override
     public String toString() {
         return "Contract{" +
-                "id=" + id +
-                ", number=" + number +
+                "number=" + number +
                 ", tariff=" + tariff +
+                ", isBlockedByClient=" + blockedByClient +
+                ", isBlockedByOperator=" + blockedByOperator +
                 ", client=" + client +
-                ", isBlockedByClient=" + isBlockedByClient +
-                ", isBlockedByOperator=" + isBlockedByOperator +
-                ", options=" + options +
                 '}';
     }
+
 }

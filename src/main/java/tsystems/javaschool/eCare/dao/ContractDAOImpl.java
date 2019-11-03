@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import tsystems.javaschool.eCare.model.Client;
 import tsystems.javaschool.eCare.model.Contract;
 
 import javax.persistence.Query;
@@ -40,7 +41,8 @@ public class ContractDAOImpl implements ContractDAO {
     @Override
     public List<Contract> getAllContracts() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createNamedQuery("Contract.getAllContracts", Contract.class).getResultList();
+//        return session.createNamedQuery("Contract.getAllContracts", Contract.class).getResultList();
+        return null;
     }
 
     @Override
@@ -59,26 +61,23 @@ public class ContractDAOImpl implements ContractDAO {
     public Contract getContractById(Long id) {
         Session session = sessionFactory.getCurrentSession();
         return session.get(Contract.class, id);
-    }
+}
 
     @Override
     public Contract findContractByNumber(Long number) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createNamedQuery("Contract.findContractByNumber", Contract.class)
-                .setParameter("number", number);
-        return (Contract) query.getSingleResult();
+//        Query query = session.createNamedQuery("Contract.findContractByNumber", Contract.class)
+//                .setParameter("number", number);
+//        return (Contract) query.getSingleResult();
+        return null;
     }
 
     @Override
     public List<Contract> getAllContractsForClient(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createNamedQuery("Contract.getAllContractsForClient", Contract.class)
-                .setParameter("id", id);
-        List<Contract> contracts = query.getResultList();
-        for(Contract c: contracts) {
-            System.out.println(c.toString());
-        }
-        return query.getResultList();
+        Query query = session.createNamedQuery("Contract.getAllContractsForClient", Contract.class);
+        query.setParameter("id", id);
+        return (List<Contract>) query.getResultList();
     }
 
     @Override

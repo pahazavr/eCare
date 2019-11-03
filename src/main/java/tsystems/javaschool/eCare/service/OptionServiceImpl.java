@@ -2,6 +2,7 @@ package tsystems.javaschool.eCare.service;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.jpa.vendor.EclipseLinkJpaDialect;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tsystems.javaschool.eCare.ECareException;
@@ -9,7 +10,7 @@ import tsystems.javaschool.eCare.dao.OptionDAO;
 import tsystems.javaschool.eCare.dao.TariffDAO;
 import tsystems.javaschool.eCare.model.Option;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OptionServiceImpl implements OptionService {
@@ -132,5 +133,145 @@ public class OptionServiceImpl implements OptionService {
         logger.info("Delete all options from DB for tariff with id: " + id + ".");
         optionDAO.deleteAllOptionsForTariff(id);
         logger.info("All options for tariff id: " + id + " deleted from DB.");
+    }
+
+    @Override
+    @Transactional
+    public Option setDependentOption(Option currentOption, Option dependentOption) throws ECareException{
+        logger.info("Set dependency of option id: " + currentOption.getId() + " with option id: " + dependentOption.getId() + ".");
+        // If current option not incompatible for chosen option.
+        if(!currentOption.getIncompatibleOptions().contains(dependentOption)) {
+            // If current option not linked with chosen option by dependency or current option is not chosen option.
+            if(!currentOption.getDependentOptions().contains(dependentOption) && !currentOption.equals(dependentOption)) {
+                currentOption.addDependentOption(dependentOption);
+                logger.info("Option id: " + dependentOption.getId() + " is now dependent for option id: " + currentOption.getId() + ".");
+                edit(currentOption);
+            }
+        }
+        else {
+            ECareException ecx = new ECareException("Chosen options are incompatible.");
+            logger.warn(ecx.getMessage(), ecx);
+            throw ecx;
+        }
+        return currentOption;
+    }
+
+    @Override
+    @Transactional
+    public Option deleteDependentOption(Option currentOption, Option dependentOption) throws ECareException {
+        logger.info("Remove dependency of option id: " + currentOption.getId() + " with option id: " + dependentOption.getId() + ".");
+        // If current option linked with chosen option by dependency.
+        if(currentOption.getDependentOptions().contains(dependentOption)) {
+            currentOption.deleteDependentOption(dependentOption);
+            logger.info("Option id: " + dependentOption.getId() + " is now independent from option id: " + currentOption.getId() + ".");
+            edit(currentOption);
+        }
+        else {
+            ECareException ecx = new ECareException("Option " + currentOption.getId() + " not contains such dependence.");
+            logger.warn(ecx.getMessage(), ecx);
+            throw ecx;
+        }
+        return currentOption;
+    }
+
+    @Override
+    @Transactional
+    public void clearDependentOptions(Option currentOption) {
+        logger.info("Remove all dependent options from option id: " + currentOption.getId() + ".");
+        Set<Option> options = currentOption.getDependentOptions();
+        Collections.synchronizedSet(options);
+        for (Option o : options) {
+            // For every dependent option for current option: remove dependency.
+            deleteDependentOption(o, currentOption);
+            edit(o);
+        }
+        // Remove all dependent options for current option.
+        currentOption.getDependentOptions().clear();
+        logger.info("All dependent options removed from option id: " + currentOption.getId() + ".");
+    }
+
+    @Override
+    @Transactional
+    public Option setIncompatibleOption(Option currentOption, Option incompatibleOption) throws ECareException {
+        logger.info("Set incompatibility of option id: " + currentOption.getId() + " with option id: " + incompatibleOption.getId() + ".");
+        // If current option not dependent for chosen option.
+        if(!currentOption.getDependentOptions().contains(incompatibleOption)) {
+            // If current option not linked with chosen option by incompatibility or current option is not chosen option.
+            if(!currentOption.getIncompatibleOptions().contains(incompatibleOption) && !currentOption.equals(incompatibleOption)) {
+                currentOption.addIncompatibleOption(incompatibleOption);
+                logger.info("Option id: " + currentOption.getId() + " is now incompatible with option id: " + incompatibleOption.getId() + ".");
+                edit(currentOption);
+            }
+        }
+        else {
+            ECareException ecx = new ECareException("Chosen options are dependent.");
+            logger.warn(ecx.getMessage(), ecx);
+            throw ecx;
+        }
+        return currentOption;
+    }
+
+    @Override
+    @Transactional
+    public Option deleteIncompatibleOption(Option currentOption, Option incompatibleOption) throws ECareException {
+        logger.info("Remove incompatibility of option id: " + currentOption.getId() + " with option id: " + incompatibleOption.getId() + ".");
+        // If current option linked with chosen option by incompatibility.
+        if(currentOption.getIncompatibleOptions().contains(incompatibleOption)) {
+            currentOption.deleteIncompatibleOption(incompatibleOption);
+            logger.info("Option id: " + currentOption.getId() + " is not incompatible now with option id: " + incompatibleOption.getId() + ".");
+            edit(currentOption);
+        }
+        else {
+            ECareException ecx = new ECareException("Option " + currentOption.getId() + " not contains such incompatibility.");
+            logger.warn(ecx.getMessage(), ecx);
+            throw ecx;
+        }
+        return currentOption;
+    }
+
+    @Override
+    @Transactional
+    public void clearIncompatibleOptions(Option currentOption) {
+        logger.info("Remove all incompatible options from option id: " + currentOption.getId() + ".");
+        Set<Option> options = currentOption.getIncompatibleOptions();
+        Collections.synchronizedSet(options);
+        for (Option o : options) {
+            // For every incompatible option for current option: remove incompatibility.
+            deleteIncompatibleOption(o, currentOption);
+            edit(o);
+        }
+        // Remove all incompatible options for current option.
+        currentOption.getIncompatibleOptions().clear();
+        logger.info("All incompatible options removed from option id: " + currentOption.getId() + ".");
+    }
+
+    @Override
+    @Transactional
+    public Option createDependencies(Option option, String[] dependentOptionsArray, String[] incompatibleOptionsArray) {
+        //Set dependent options if exists for current option.
+        long dependentOptionId = 0;
+        Option dependentOption = null;
+        if(dependentOptionsArray != null) {
+            for(String stringId: dependentOptionsArray) {
+                dependentOptionId = Long.parseLong(stringId);
+                dependentOption = getOptionById(dependentOptionId);
+                setDependentOption(option, dependentOption);
+                setDependentOption(dependentOption, option);
+            }
+        }
+        //Set incompatible options if exists for current option.
+        long incompatibleOptionId = 0;
+        Option incompatibleOption = null;
+        if(incompatibleOptionsArray != null) {
+            for (String stringId : incompatibleOptionsArray) {
+                incompatibleOptionId = Long.parseLong(stringId);
+                incompatibleOption = getOptionById(incompatibleOptionId);
+                setIncompatibleOption(option, incompatibleOption);
+                setIncompatibleOption(incompatibleOption, option);
+            }
+        }
+        //Updating of option in DB.
+        edit(option);
+        return option;
     }
 }

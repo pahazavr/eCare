@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+import tsystems.javaschool.eCare.ECareException;
 import tsystems.javaschool.eCare.model.Client;
 import tsystems.javaschool.eCare.service.ClientService;
 import tsystems.javaschool.eCare.service.SecurityService;
@@ -72,9 +73,13 @@ public class ClientController {
         clientService.add(client);
         securityService.autoLogin(client.getEmail(), client.getConfirmPassword());
 
-        //Role role = client.getRoles();
+        String role = null;
+        Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>)SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        for (GrantedAuthority authority : authorities) {
+            role = authority.getAuthority();
+        }
+        httpSession.setAttribute("role", role);
         httpSession.setAttribute("client", client);
-        //httpSession.setAttribute("role", role);
         return "redirect:/welcome";
     }
 
@@ -99,22 +104,24 @@ public class ClientController {
         for (GrantedAuthority authority : authorities) {
             role = authority.getAuthority();
         }
-        model.addAttribute("role", role);
+        httpSession.setAttribute("role", role);
         try {
             if (role.equals(Role.ROLE_USER.toString())) {
                 UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 Client client = clientService.findClientByEmail(userDetails.getUsername());
                 httpSession.setAttribute("client", client);
-                //model.addAttribute("pagename", PageName.CLIENT.toString());
-                //model.addAttribute("successmessage", "Client " + client.getName() + " loaded from database.");
                 logger.info("User(client): " + client + " login in application.");
+                return "welcome";
+            } else {
+                UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                Client operator = clientService.findClientByEmail(userDetails.getUsername());
+                httpSession.setAttribute("operator", operator);
+                logger.info("User(operator): " + operator + " login in application.");
                 return "welcome";
             }
         } catch (Exception ecx) {
             return "welcome";
         }
-
-        return "welcome";
     }
 
     @RequestMapping(value = "/client/profile", method = RequestMethod.POST)
@@ -131,15 +138,14 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/client/updateProfile", method = RequestMethod.POST)
-    public String updateProfile(@ModelAttribute Client client, HttpSession httpSession, HttpServletRequest request) {
+    public String updateProfile(@ModelAttribute Client client, HttpServletRequest request) {
         try {
             client.setName(request.getParameter("name"));
             client.setSurname(request.getParameter("surname"));
-            client.setPassport(Integer.parseInt(request.getParameter("passport")));
+            client.setPassport(Long.valueOf(request.getParameter("passport")));
             client.setAddress(request.getParameter("address"));
             client.setBirthDate(Date.valueOf(request.getParameter("birthDate")));
             clientService.edit(client);
-            //httpSession.setAttribute("client", client);
             logger.info("User "+ client +" update profile.");
             return "client/profile";
         } catch (Exception ecx) {
@@ -150,10 +156,23 @@ public class ClientController {
         }
     }
 
-    @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public ModelAndView admin() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("admin");
-        return modelAndView;
+   @RequestMapping(value = "/client/addAmountToBalance", method = RequestMethod.POST)
+    public String addAmountToBalance(@ModelAttribute Client client, HttpServletRequest request) {
+        try {
+//            int amount = Util.checkInt(req.getParameter("amount"));
+            int amount = Integer.parseInt(request.getParameter("amount"));
+            client.addAmountToBalance(amount);
+            clientService.edit(client);
+//            httpSession.setAttribute("client", client);
+//            req.setAttribute("pagename", PageName.CLIENT.toString());
+//            req.setAttribute("successmessage", "Amount " + amount + " added to balance of client " + client.getFullName() + ".");
+            logger.info("User added amount to balance of client " + client + ".");
+            return "client/profile";
+        } catch (ECareException ecx) {
+//            req.setAttribute("client", client);
+//            req.setAttribute("pagename", PageName.CLIENT.toString());
+//            req.setAttribute("errormessage", ecx.getMessage());
+            return "client/profile";
+        }
     }
 }

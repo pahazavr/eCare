@@ -64,9 +64,9 @@ public class OptionDAOImpl implements OptionDAO {
     @Override
     public List<Option> getAllOptionsForTariff(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createNamedQuery("Option.getAllOptionsForTariff", Option.class)
-                .setParameter("id", id)
-                .getResultList();
+        Query query = session.createNamedQuery("Option.getAllOptionsForTariff", Option.class);
+        query.setParameter("id", id);
+        return (List<Option>) query.getResultList();
     }
 
     @Override

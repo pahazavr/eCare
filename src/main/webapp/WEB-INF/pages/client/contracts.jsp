@@ -33,13 +33,12 @@
             <tr>
                 <td>${contract.id}</td>
                 <td>
-                    <form:form id="showContractForm${contract.id}" method="POST"
+                    <form:form id="viewContractForm${contract.id}" method="POST"
                                action="${contextPath}/client/viewContract/"
                                enctype="application/x-www-form-urlencoded">
                         <input type="hidden" name="contractId" value=${contract.id}>
-                        <input type="hidden" name="sessionRole" value=${role}>
-                        <a class="inline-link" href="#"
-                           onclick="document.forms['showContractForm${contract.id}'].submit()">${contract.number}</a>
+                        <a href="#"
+                           onclick="document.forms['viewContractForm${contract.id}'].submit()">${contract.number}</a>
                     </form:form>
                 </td>
                 <td>

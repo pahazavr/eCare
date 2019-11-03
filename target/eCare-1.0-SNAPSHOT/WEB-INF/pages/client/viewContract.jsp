@@ -57,12 +57,12 @@
 
         <c:choose>
             <c:when test="${optionsList.size() != 0}">
-                <c:if test="${contract.isBlockedByOperator() == false && contract.isBlockedByClient() == false && contract.getClient().balance > 0}">
-                    <a class="inline-link-edit" title="Change tariff or options" href="#" onclick="document['changeTariffForm'].submit()"><h2>Edit</h2></a>
+                <c:if test="${contract.isBlockedByOperator() == false && contract.isBlockedByClient() == false && contract.client.balance > 0}">
+                    <a title="Change tariff or options" href="#" onclick="document.forms['changeTariffForm'].submit()"><h2>Edit</h2></a>
                 </c:if>
                 </p>
                 <br>
-                <table>
+                <table class="table">
                     <tr>
                         <th>
                             Title
@@ -91,35 +91,18 @@
             </c:when>
             <c:otherwise>
                 <h2>empty.</h2>
-                <c:if test="${contract.isBlockedByOperator() == false && contract.isBlockedByClient() == false && contract.getClient().balance > 0}">
-                    <a class="inline-link-edit" title="Change tariff or options" href="#" onclick="document['changeTariffForm'].submit()"><h2>Edit</h2></a>
+                <c:if test="${contract.isBlockedByOperator() == false && contract.isBlockedByClient() == false && contract.client.balance > 0}">
+                    <a title="Change tariff or options" href="#" onclick="document.forms['changeTariffForm'].submit()"><h2>Edit</h2></a>
                 </c:if>
                 </p>
             </c:otherwise>
         </c:choose>
 
-
         <form:form id="changeTariffForm" method="POST"
-                   action="changeTariff"
+                   action="${contextPath}/client/changeTariff"
                    enctype="application/x-www-form-urlencoded">
-            <input type="hidden" name="id" value=${contract.id}>
-            <input type="hidden" name="sessionRole" value=${role}>
+            <input type="hidden" name="contractId" value=${contract.id}>
         </form:form>
-
-<%--        <table class="table">--%>
-<%--            <tr>--%>
-<%--                <th>Title</th>--%>
-<%--                <th>Price</th>--%>
-<%--                <th>Cost of connection</th>--%>
-<%--            </tr>--%>
-<%--            <c:forEach var="option" items="${optionsList}">--%>
-<%--                <tr>--%>
-<%--                    <td>${option.title}</td>--%>
-<%--                    <td>${option.price}</td>--%>
-<%--                    <td>${option.costOfConnection}</td>--%>
-<%--                </tr>--%>
-<%--            </c:forEach>--%>
-<%--        </table>--%>
     <jsp:include page="../fragments/footer.jsp"/>
 </div>
 </body>

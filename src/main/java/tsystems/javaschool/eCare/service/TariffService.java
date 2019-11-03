@@ -8,8 +8,8 @@ public interface TariffService {
     List<Tariff> getAllTariffs();
     void add(Tariff tariff);
     void edit(Tariff tariff);
-    void delete(Long id);
     Tariff getTariffById(Long id);
+    void deleteTariff(Long id);
     void deleteAllTariffs();
     Long getNumberOfTariffs();
 }

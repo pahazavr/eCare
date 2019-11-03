@@ -20,12 +20,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" title="See all contracts" href="#"
-                   onclick="document.forms['contractsForm'].submit()">Contracts</a>
+                <a class="nav-link" title="See all clients" href="#"
+                   onclick="document.forms['clientsForm'].submit()">Clients</a>
             </li>
             <li class="nav-item">
-                <c:url value="#" var="some"/>
-                <a class="nav-link" href="${some}">Something</a>
+                <a class="nav-link" title="See all tariffs" href="#"
+                   onclick="document.forms['tariffForm'].submit()">Tariffs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" title="See all contracts" href="#"
+                   onclick="document.forms['contractsForm'].submit()">Contracts</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" title="Edit profile" href="#"
@@ -42,13 +46,21 @@
 <form:form id="profileForm" method="POST"
            action="${contextPath}/client/profile"
            enctype="application/x-www-form-urlencoded">
-    <input type="hidden" name="sessionRole" value=${role}>
 </form:form>
 
 <form:form id="contractsForm" method="GET"
            action="${contextPath}/client/viewAllContractsForClient"
            enctype="application/x-www-form-urlencoded">
-    <input type="hidden" name="sessionRole" value=${role}>
+</form:form>
+
+<form:form id="tariffForm" method="POST"
+           action="${contextPath}/operator/viewAllTariffs"
+           enctype="application/x-www-form-urlencoded">
+</form:form>
+
+<form:form id="clientsForm" method="POST"
+           action="${contextPath}/operator/viewAllClients"
+           enctype="application/x-www-form-urlencoded">
 </form:form>
 
 <div class="container">

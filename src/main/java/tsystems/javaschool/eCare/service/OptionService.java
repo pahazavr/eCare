@@ -14,4 +14,12 @@ public interface OptionService {
     Long getNumberOfOptions();
     List<Option> getAllOptionsForTariff(Long id);
     void deleteAllOptionsForTariff(Long id);
+
+    Option setDependentOption(Option currentOption, Option dependentOption);
+    Option deleteDependentOption(Option currentOption, Option dependentOption);
+    void clearDependentOptions(Option currentOption);
+    Option setIncompatibleOption(Option currentOption, Option incompatibleOption);
+    Option deleteIncompatibleOption(Option currentOption, Option incompatibleOption);
+    void clearIncompatibleOptions(Option currentOption);
+    Option createDependencies(Option option, String[] dependentOptionsArray, String[] incompatibleOptionsArray);
 }

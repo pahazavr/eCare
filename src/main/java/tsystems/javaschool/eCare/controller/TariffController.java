@@ -1,20 +1,27 @@
 package tsystems.javaschool.eCare.controller;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import tsystems.javaschool.eCare.ECareException;
+import tsystems.javaschool.eCare.model.Option;
 import tsystems.javaschool.eCare.model.Tariff;
+import tsystems.javaschool.eCare.service.OptionService;
 import tsystems.javaschool.eCare.service.TariffService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/tariffs")
 public class TariffController {
+
+    private static Logger logger = Logger.getLogger(TariffController.class);
 
     private TariffService tariffService;
 
@@ -23,60 +30,83 @@ public class TariffController {
         this.tariffService = tariffService;
     }
 
-    // Загрузка всех тарифов на главной странице
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView allTariffs() {
-        List<Tariff> tariffs = tariffService.getAllTariffs();
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("admin/tariffs");
-        modelAndView.addObject("tariffsList", tariffs);
-        return modelAndView;
+    private OptionService optionService;
+
+    @Autowired
+    public void setOptionService(OptionService optionService) {
+        this.optionService = optionService;
     }
 
-    // Редактирование тарифа с переходом на страницу "/edit/{id}"
-    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
-    public ModelAndView editPage(@PathVariable("id") Long id) {
-        Tariff tariff = tariffService.getTariffById(id);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("editTariff");
-        modelAndView.addObject("tariff", tariff);
-        return modelAndView;
+    @RequestMapping(value = "/operator/viewAllTariffs", method = RequestMethod.POST)
+    public String viewAllTariffs(Model model, HttpServletRequest req) {
+//        ControllerUtil.setRole(req);
+        List<Tariff> tariffsList = tariffService.getAllTariffs();
+        model.addAttribute("tariffsList", tariffsList);
+//        req.setAttribute("pagename", PageName.TARIFFS.toString());
+        logger.info("User (operator) went to view all tariffs page.");
+        return "operator/tariffs";
     }
 
-    // Добавление тафрифа с переходом на страницу "/add"
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ModelAndView addPage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("editTariff");
-        return modelAndView;
+    @RequestMapping(value = "/operator/viewTariff", method = RequestMethod.POST)
+    public String viewTariff(Model model, HttpServletRequest req) {
+//        ControllerUtil.setRole(req);
+        Long tariffId = Long.valueOf(req.getParameter("tariffId"));
+        Tariff tariff = tariffService.getTariffById(tariffId);
+        model.addAttribute("tariff", tariff);
+        List<Option> optionsList = optionService.getAllOptionsForTariff(tariffId);
+        model.addAttribute("optionsList", optionsList);
+//        model.addAttribute("pagename", PageName.TARIFF.toString());
+        logger.info("User (operator) went to view tariff page.");
+        return "operator/viewTariff";
     }
 
-    // После нажатия на кнопку delete
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET)
-    public ModelAndView deleteTariff(@PathVariable("id") Long id) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/");
-        tariffService.delete(id);
-        return modelAndView;
+    @RequestMapping(value = "/operator/deleteTariff", method = RequestMethod.POST)
+    public String deleteTariff(Model model, HttpServletRequest req) {
+//        ControllerUtil.setRole(req);
+        Long tariffId = Long.valueOf(req.getParameter("tariffId"));
+        List<Tariff> tariffs = null;
+        try {
+            tariffService.deleteTariff(tariffId);
+            logger.info("Tariff with id: " + tariffId + " deleted from database.");
+            tariffs = tariffService.getAllTariffs();
+            model.addAttribute("tariffs", tariffs);
+//            model.addAttribute("pagename", PageName.TARIFFS.toString());
+            model.addAttribute("successmessage", "Tariff with id: " + tariffId + " deleted from database.");
+            logger.info("User went to all tariffs page.");
+            return "operator/tariffs";
+        } catch (ECareException ecx) {
+            tariffs = tariffService.getAllTariffs();
+//            model.addAttribute("tariffs", tariffs);
+//            req.setAttribute("pagename", PageName.TARIFFS.toString());
+            req.setAttribute("errormessage", ecx.getMessage());
+            return "operator/tariffsList";
+        }
     }
 
-    // После нажатия кнопки Изменить на странице "/edit"
-    // происходит redirect на страницу "/"
-    @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public ModelAndView editTariff(@ModelAttribute("tariff") Tariff tariff) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/");
-        tariffService.edit(tariff);
-        return modelAndView;
+    @RequestMapping(value = "operator/newTariff", method = RequestMethod.POST)
+    public String newTariff(Model model, HttpServletRequest req) {
+//        ControllerUtil.setRole(req);
+//        req.setAttribute("pagename", PageName.NEW_TARIFF.toString());
+        model.addAttribute("newTariff", new Tariff());
+        logger.info("User (operator) went to create new tariff page.");
+        return "operator/createTariff";
     }
 
-    // После нажатия кнопки Добавить на странице "/add"
-    // происходит redirect на страницу "/"
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ModelAndView addTariff(@ModelAttribute("tariff") Tariff tariff) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/");
-        tariffService.add(tariff);
-        return modelAndView;
+    @RequestMapping(value = "/operator/createTariff", method = RequestMethod.POST)
+    public String createTariff(@ModelAttribute("newTariff") Tariff tariff, Model model, HttpServletRequest req) {
+        try {
+            tariffService.add(tariff);
+//            model.addAttribute("tariff", tariff);
+            model.addAttribute("successmessage", "Tariff " + tariff.getTitle() + " created and saved in database.");
+            logger.info("New tariff " + tariff + " created.");
+            List<Tariff> tariffsList = tariffService.getAllTariffs();
+            model.addAttribute("tariffsList", tariffsList);
+            return "operator/tariffs";
+        } catch (ECareException ecx) {
+//            req.setAttribute("pagename", PageName.NEW_TARIFF.toString());
+            model.addAttribute("errormessage", ecx.getMessage());
+            return "operator/createTariff";
+        }
     }
+
 }

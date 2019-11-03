@@ -39,7 +39,8 @@ public class ClientDAOImpl implements ClientDAO {
     @Override
     public List<Client> getAllClients() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createNamedQuery("Client.getAllClients", Client.class).getResultList();
+        Query query = session.createNamedQuery("Client.getAllClients", Client.class);
+        return (List<Client>) query.getResultList();
     }
 
     @Override
@@ -84,6 +85,4 @@ public class ClientDAOImpl implements ClientDAO {
                 .setParameter("number", number)
                 .getSingleResult();
     }
-
-
 }

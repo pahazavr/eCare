@@ -15,7 +15,7 @@
         <intercept-url pattern="/client/profile" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/>
         <intercept-url pattern="/client/contracts" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/>
         <intercept-url pattern="/client/viewContract" access="hasAnyRole('ROLE_USER', 'ROLE_ADMIN')"/>
-        <intercept-url pattern="/admin" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/operator/viewAllClients" access="hasRole('ROLE_ADMIN')"/>
 
         <form-login login-page="/login"
                     default-target-url="/welcome"

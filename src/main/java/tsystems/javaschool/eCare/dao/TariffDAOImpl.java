@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import tsystems.javaschool.eCare.model.Tariff;
 
+import javax.persistence.Query;
 import java.util.List;
 
 @Repository
@@ -38,7 +39,9 @@ public class TariffDAOImpl implements TariffDAO {
     @Override
     public List<Tariff> getAllTariffs() {
         Session session = sessionFactory.getCurrentSession();
-        return session.createNamedQuery("Tariff.getAllTariffs", Tariff.class).getResultList();
+        Query query = session.createNamedQuery("Tariff.getAllTariffs", Tariff.class);
+        return (List<Tariff>) query.getResultList();
+
     }
 
     @Override

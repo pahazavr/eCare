@@ -19,7 +19,7 @@
 <div class="outer-wrapper container">
     <jsp:include page="../fragments/header.jsp"/>
     <h3>Profile info of ${client.getName()}:
-        <a href="#" onclick="document.forms['EditProfileForm'].submit()">Edit</a></h3>
+        <a href="#" onclick="document.forms['editProfileForm'].submit()">Edit</a></h3>
     <table class="table">
         <tr>
             <td>Full name</td>
@@ -41,9 +41,28 @@
             <td>Email</td>
             <td>${client.getEmail()}</td>
         </tr>
+        <tr>
+            <td>Balance</td>
+            <td>${client.getBalance()}</td>
+        </tr>
+        <tr>
+            <td>
+                <form:form method="POST"
+                           action="${contextPath}/client/addAmountToBalance"
+                           enctype="application/x-www-form-urlencoded">
+                    <input type="text" class="input-group form-control mb-4"
+                           placeholder="Enter amount" name="amount" size=10 value="" width="15">
+            </td>
+            <td>
+                    <button class="btn btn-outline-primary btn-rounded waves-effect"
+                            type="submit">Replenish</button>
+                </form:form>
+            </td>
+        </tr>
     </table>
 
-    <form:form id="EditProfileForm" method="POST" action="${contextPath}/client/editProfile"
+    <form:form id="editProfileForm" method="POST"
+               action="${contextPath}/client/editProfile"
                enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="sessionRole" value=${role}>
     </form:form>

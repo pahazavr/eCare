@@ -1,23 +1,20 @@
 package tsystems.javaschool.eCare.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
 @Table(name = "roles")
-public class Role {
+public class Role  implements Serializable {
+
+    private Long id;
+    private String title;
+    private Set<Client> clients;
 
     @Id
     @Column(name = "role_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "role_title")
-    private String title;
-
-    @ManyToMany(mappedBy = "roles")
-    private Set<Client> clients;
-
     public Long getId() {
         return id;
     }
@@ -26,6 +23,7 @@ public class Role {
         this.id = id;
     }
 
+    @Column(name = "role_title")
     public String getTitle() {
         return title;
     }
@@ -34,6 +32,10 @@ public class Role {
         this.title = title;
     }
 
+    @ManyToMany
+    @JoinTable(name = "client_role",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id"))
     public Set<Client> getClients() {
         return clients;
     }

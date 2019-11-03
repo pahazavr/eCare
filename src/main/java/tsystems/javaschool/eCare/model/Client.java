@@ -1,6 +1,7 @@
 package tsystems.javaschool.eCare.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,90 +10,51 @@ import java.util.Set;
 @Table(name = "clients")
 @NamedQueries(
         {
-//                @NamedQuery(name = "Client.getAllClients", query = "SELECT cl FROM Client cl WHERE Role.title = 'ROLE_USER'"),
-//                @NamedQuery(name = "Client.findClientByLoginAndPassword", query = "SELECT cl FROM Client cl WHERE cl.email = :login AND cl.password = :password"),
-//                @NamedQuery(name = "Client.findClientByNumber", query = "SELECT cnt.client FROM Contract cnt WHERE cnt.number = :number"),
+                @NamedQuery(name = "Client.getAllClients", query = "SELECT DISTINCT cl FROM Client cl "+
+                        "LEFT JOIN cl.roles rols WHERE rols.title = 'ROLE_USER'"),
+                @NamedQuery(name = "Client.findClientByLoginAndPassword", query = "SELECT cl FROM Client cl WHERE cl.email = :login AND cl.password = :password"),
+                @NamedQuery(name = "Client.findClientByNumber", query = "SELECT cnt.client FROM Contract cnt WHERE cnt.number = :number"),
                 @NamedQuery(name = "Client.findClientByEmail", query = "SELECT cl FROM Client cl WHERE cl.email = :email"),
 //                @NamedQuery(name = "Client.deleteAllClients", query = "DELETE FROM Client WHERE Role.title = 'ROLE_USER'"),
 //                @NamedQuery(name = "Client.size", query="SELECT count(cl) FROM Client cl WHERE Role.title = 'ROLE_USER'")
         })
-public class Client {
+public class Client implements Serializable {
 
-    @Id
-    @Column(name = "client_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "surname")
     private String surname;
-
-    @Column(name = "birthDate")
     private Date birthDate;
-
-    @Column(name = "passport")
-    private int passport;
-
-    @Column(name = "address")
+    private Long passport;
     private String address;
-
-    @Column(name = "balance")
-    private int balance;
-
-    @Column(name = "email")
+    private int balance = 0;
     private String email;
-
-    @Column(name = "password")
     private String password;
 
-    @Transient
+
     private String confirmPassword;
+    private String fullName;
 
-    @ManyToMany
-    @JoinTable(name = "client_role",
-            joinColumns = @JoinColumn(name = "client_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "client", fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Contract> contracts = new HashSet<>();
+
 
     public Client() {
     }
 
-    public Client(String name, String surname, Date birthDate, int passport, String address, int balance, String email,
-                  String password, String confirmPassword, Set<Role> roles, Set<Contract> contracts) {
+    public Client(String name, String surname, Date birthDate, Long passport, String address, String email, String password, int balance) {
         this.name = name;
         this.surname = surname;
         this.birthDate = birthDate;
         this.passport = passport;
         this.address = address;
-        this.balance = balance;
         this.email = email;
         this.password = password;
-        this.confirmPassword = confirmPassword;
-        this.roles = roles;
-        this.contracts = contracts;
+        this.balance = balance;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
+    @Id
+    @Column(name = "client_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -101,6 +63,7 @@ public class Client {
         this.id = id;
     }
 
+    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -109,6 +72,7 @@ public class Client {
         this.name = name;
     }
 
+    @Column(name = "surname")
     public String getSurname() {
         return surname;
     }
@@ -117,6 +81,18 @@ public class Client {
         this.surname = surname;
     }
 
+    @Transient
+    public String getFullName() {
+        if(surname != null) return name + " " + surname;
+        else return name;
+    }
+
+    public void setFullName(String fullName) {
+       this.fullName = fullName;
+    }
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "birthDate")
     public Date getBirthDate() {
         return birthDate;
     }
@@ -125,14 +101,16 @@ public class Client {
         this.birthDate = birthDate;
     }
 
-    public int getPassport() {
+    @Column(name = "passport")
+    public Long getPassport() {
         return passport;
     }
 
-    public void setPassport(int passport) {
+    public void setPassport(Long passport) {
         this.passport = passport;
     }
 
+    @Column(name = "address")
     public String getAddress() {
         return address;
     }
@@ -141,6 +119,7 @@ public class Client {
         this.address = address;
     }
 
+    @Column(name = "balance")
     public int getBalance() {
         return balance;
     }
@@ -149,6 +128,11 @@ public class Client {
         this.balance = balance;
     }
 
+    public void addAmountToBalance(int amount) {
+        this.balance += amount;
+    }
+
+    @Column(name = "email")
     public String getEmail() {
         return email;
     }
@@ -157,18 +141,36 @@ public class Client {
         this.email = email;
     }
 
+    @Column(name = "password")
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getFullName(){
-        return name+" "+surname;
+    @Transient
+    public String getConfirmPassword() {
+        return confirmPassword;
     }
 
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    @ManyToMany
+    @JoinTable(name = "client_role",
+            joinColumns = @JoinColumn(name = "client_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     public Set<Contract> getContracts() {
         return contracts;
     }
@@ -177,9 +179,22 @@ public class Client {
         this.contracts = contracts;
     }
 
+
+    public void addContract(Contract contract) {
+        this.contracts.add(contract);
+    }
+
     @Override
     public String toString() {
-        return "Client [name=" + name + ", surname=" + surname + ", birthdate=" + birthDate + ", passport="+passport+"," +
-                " address=" + address + ", email=" + email + ", password="+password+"]";
+        return "Client{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", passport=" + passport +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", balance=" + balance +
+                '}';
     }
 }

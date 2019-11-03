@@ -231,9 +231,7 @@ public class ContractServiceImpl implements ContractService {
             //If contract blocked by client.
             if(contract.isBlockedByClient()) {
                 contract.setBlockedByClient(false);
-//                Client client = contract.getClient();
-//                client.getContracts().add(contract);
-//                clientService.edit(client);
+                // update
                 edit(contract);
                 logger.info("Contract " + contract + " is unblocked by client.");
             }
@@ -290,59 +288,59 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public Contract enableOption(Contract cn, Option op) throws ECareException {
-        logger.info("Enable option id: " + op.getId() + " in contract id: " + cn.getId() + ".");
+    public Contract enableOption(Contract contract, Option option) throws ECareException {
+        logger.info("Enable option id: " + option.getId() + " in contract id: " + contract.getId() + ".");
         // Set current enabled options for contract in separated array list.
-        List<Option> currentOptions = new ArrayList<>(cn.getOptions());
+        List<Option> currentOptions = new ArrayList<>(contract.getOptions());
         // Get dependent client entity for contract.
-        Client client = cn.getClient();
+        Client client = contract.getClient();
         //Check for incompatibility
-        if(cn.getOptions().size() != 0) {
-            for(Option o: cn.getOptions()) {
+        if(contract.getOptions().size() != 0) {
+            for(Option o: contract.getOptions()) {
                 // If chosen option are incompatible with any of enabled options for contract tariff -> ecx.
-                if(o.getIncompatibleOptions().contains(op)) {
-                    ECareException ecx = new ECareException("Option " + op.getTitle() + " is incompatible with option "
-                            + o.getTitle() + " in contract " + cn.getNumber() + ".");
+                if(o.getIncompatibleOptions().contains(option)) {
+                    ECareException ecx = new ECareException("Option " + option.getTitle() + " is incompatible with option "
+                            + o.getTitle() + " in contract " + contract.getNumber() + ".");
                     logger.warn(ecx.getMessage(), ecx);
                     throw ecx;
                 }
             }
         }
-        // If chosen option not enabled yet for contract tariff.
-        if(!cn.getOptions().contains(op)) {
-            cn.addOption(op);
+        // If chosen option not enabled yet for contract's tariff.
+        if(!contract.getOptions().contains(option)) {
+            contract.addOption(option);
             // If chosen option not been enabled for contract tariff in the previous time -> withdrawal for client.
-            if(!currentOptions.contains(op)) {
-                logger.info("Withdrawing of option id: " + op.getId() + " cost of connection: " +op.getPrice()
-                        + " from amount of client id: " + client.getId() + ".");
-                client.setBalance(client.getBalance() - op.getCostOfConnection());
-                logger.info("Withdrawing completed. Client amount: " + client.getBalance() + ".");
+            if(!currentOptions.contains(option)) {
+                logger.info("Withdrawing of option id: " + option.getId() + " cost of connection: " +option.getPrice()
+                        + " from balance of client id: " + client.getId() + ".");
+                client.setBalance(client.getBalance() - option.getCostOfConnection());
+                logger.info("Withdrawing completed. Client balance: " + client.getBalance() + ".");
             }
-            logger.info("Option id: " + op.getId() + " enabled in contract id: " + cn.getId() + ".");
-            for(Option dependentOption: op.getDependentOptions()) {
+            logger.info("Option id: " + option.getId() + " enabled in contract id: " + contract.getId() + ".");
+            for(Option dependentOption: option.getDependentOptions()) {
                 // For every dependent option from chosen option: if contract not contains already that dependent option - > add.
-                if(!cn.getOptions().contains(dependentOption)) {
-                    cn.addOption(dependentOption);
+                if(!contract.getOptions().contains(dependentOption)) {
+                    contract.addOption(dependentOption);
                     // For every dependent option from chosen option: if dependent option not been enabled for contract
                     // tariff in the previous time -> withdrawal for client.
                     if(!currentOptions.contains(dependentOption)) {
                         logger.info("Withdrawing of dependent option id: " + dependentOption.getId() + " cost of connection "
-                                + dependentOption.getPrice() + " from amount of client id: " + client.getId() + ".");
+                                + dependentOption.getPrice() + " from balance of client id: " + client.getId() + ".");
                         client.setBalance(client.getBalance() - dependentOption.getCostOfConnection());
-                        logger.info("Withdrawing completed. Client amount: " + client.getBalance() + ".");
+                        logger.info("Withdrawing completed. Client balance: " + client.getBalance() + ".");
                     }
-                    logger.info("Dependent option id: " + dependentOption.getId() + " enabled in contract id: " + cn.getId() + ".");
+                    logger.info("Dependent option id: " + dependentOption.getId() + " enabled in contract id: " + contract.getId() + ".");
                 }
             }
         }
         else {
-            ECareException ecx = new ECareException("Option " + op.getTitle() + " is already enabled in contract " + cn.getNumber() + ".");
+            ECareException ecx = new ECareException("Option " + option.getTitle() + " is already enabled in contract " + contract.getNumber() + ".");
             logger.warn(ecx.getMessage(), ecx);
             throw ecx;
         }
         // Updating of client.
         clientService.edit(client);
-        return cn;
+        return contract;
     }
 
     @Override
@@ -380,9 +378,9 @@ public class ContractServiceImpl implements ContractService {
         contract.setTariff(tariff);
         // If chosen tariff not been enabled in contract in the previous time -> withdrawal for client.
         if(!tariff.equals(currentTariff)) {
-            logger.info("Withdrawing of tariff id: " + tariff.getId() + " price " + tariff.getPrice() + " from amount of client id: " + client.getId() + ".");
+            logger.info("Withdrawing of tariff id: " + tariff.getId() + " price " + tariff.getPrice() + " from balance of client id: " + client.getId() + ".");
             client.setBalance(client.getBalance() - tariff.getPrice());
-            logger.info("Withdrawing completed. Client amount: " + client.getBalance() + ".");
+            logger.info("Withdrawing completed. Client balance: " + client.getBalance() + ".");
         }
         // Updating of client.
         clientService.edit(client);
@@ -390,10 +388,9 @@ public class ContractServiceImpl implements ContractService {
         // Clear old options in contract and set new options
         contract.getOptions().clear();
         if(chosenOptionsArray != null) {
-            List<String> optionsId = Arrays.asList(chosenOptionsArray);
             Long optionId;
             Option option = null;
-            for(String stringId: optionsId) {
+            for(String stringId: chosenOptionsArray) {
                 optionId = Long.parseLong(stringId);
                 option = optionService.getOptionById(optionId);
                 contract = enableOption(contract, option);
@@ -407,8 +404,8 @@ public class ContractServiceImpl implements ContractService {
     @Override
     @Transactional
     public Contract setDefaultTariff(Contract contract) {
-        Tariff tariff = tariffService.getTariffById(1l);
-        String optionId[] = {"1"};
+        Tariff tariff = tariffService.getTariffById(12L);
+        String[] optionId = {"53"};
         contract = setTariff(contract, tariff, optionId);
         return contract;
     }

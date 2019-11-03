@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tsystems.javaschool.eCare.ECareException;
 import tsystems.javaschool.eCare.dao.TariffDAO;
+import tsystems.javaschool.eCare.model.Option;
 import tsystems.javaschool.eCare.model.Tariff;
 
 import java.util.List;
@@ -68,22 +69,6 @@ public class TariffServiceImpl implements TariffService {
 
     @Override
     @Transactional
-    public void delete(Long id) throws ECareException {
-        logger.info("Delete tariff with id: " + id + " from DB.");
-        Tariff tariff = tariffDAO.getTariffById(id);
-        //If DAO returns null method will throws an ECareException.
-        if (tariff == null) {
-            ECareException ecx = new ECareException("Tariff with id = " + id + " not exist.");
-            logger.warn(ecx.getMessage(), ecx);
-            throw ecx;
-        }
-        // Else tariff will be deleted from the database.
-        tariffDAO.delete(tariff);
-        logger.info("Tariff " + tariff + " deleted from DB.");
-    }
-
-    @Override
-    @Transactional
     public Tariff getTariffById(Long id) throws ECareException {
         logger.info("Load tariff with id: " + id + " from DB.");
         Tariff tariff = tariffDAO.getTariffById(id);
@@ -96,6 +81,22 @@ public class TariffServiceImpl implements TariffService {
         logger.info("Tariff " + tariff + " loaded from DB.");
         //Else method returns tariff entity.
         return tariff;
+    }
+
+    @Override
+    @Transactional
+    public void deleteTariff(Long id) throws ECareException {
+        logger.info("Delete tariff with id: " + id + " from DB.");
+        Tariff tariff = tariffDAO.getTariffById(id);
+        //If DAO returns null method will throws an ECareException.
+        if (tariff == null) {
+            ECareException ecx = new ECareException("Tariff with id = " + id + " not exist.");
+            logger.warn(ecx.getMessage(), ecx);
+            throw ecx;
+        }
+        // Else tariff will be deleted from the database.
+        tariffDAO.delete(tariff);
+        logger.info("Tariff " + tariff + " deleted from DB.");
     }
 
     @Override

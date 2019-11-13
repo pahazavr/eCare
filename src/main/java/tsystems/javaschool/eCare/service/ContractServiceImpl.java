@@ -288,12 +288,10 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public Contract enableOption(Contract contract, Option option) throws ECareException {
+    public Contract enableOption(Client client, Contract contract, Option option) throws ECareException {
         logger.info("Enable option id: " + option.getId() + " in contract id: " + contract.getId() + ".");
         // Set current enabled options for contract in separated array list.
         List<Option> currentOptions = new ArrayList<>(contract.getOptions());
-        // Get dependent client entity for contract.
-        Client client = contract.getClient();
         //Check for incompatibility
         if(contract.getOptions().size() != 0) {
             for(Option o: contract.getOptions()) {
@@ -369,12 +367,11 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public Contract setTariff(Contract contract, Tariff tariff, String[] chosenOptionsArray) {
+    public Contract setTariff(Client client, Contract contract, Tariff tariff, String[] chosenOptionsArray) {
         logger.info("Set tariff: " + tariff.getId() + " in contract id: " + contract.getId() + ".");
         // Get current tariff from contract.
         Tariff currentTariff = contract.getTariff();
         // Get dependent client entity for contract.
-        Client client = contract.getClient();
         contract.setTariff(tariff);
         // If chosen tariff not been enabled in contract in the previous time -> withdrawal for client.
         if(!tariff.equals(currentTariff)) {
@@ -393,7 +390,7 @@ public class ContractServiceImpl implements ContractService {
             for(String stringId: chosenOptionsArray) {
                 optionId = Long.parseLong(stringId);
                 option = optionService.getOptionById(optionId);
-                contract = enableOption(contract, option);
+                contract = enableOption(client, contract, option);
             }
         }
         //Updating of contract in DB.
@@ -403,10 +400,29 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     @Transactional
-    public Contract setDefaultTariff(Contract contract) {
+    public Contract setDefaultTariff(Client client, Contract contract) {
         Tariff tariff = tariffService.getTariffById(12L);
         String[] optionId = {"53"};
-        contract = setTariff(contract, tariff, optionId);
+        contract = setTariff(client, contract, tariff, optionId);
         return contract;
+    }
+
+    @Override
+    @Transactional
+    public Boolean isExistNumber(Long number) {
+        logger.info("Find contract with number: " + number + " in DB.");
+        Contract contract = null;
+        try {
+            // Search of client in the database by DAO method.
+            contract = contractDAO.findContractByNumber(number);
+            // If client does not exist in database, block try catches the NoResultException and
+            // return false.
+        } catch(NoResultException nrx) {
+            logger.warn("Contract with number: " + number + " does not exist.");
+            return false;
+        }
+        logger.info("Contract " + contract + " found in DB.");
+        // Else, if client exist and loaded, method returns true.
+        return true;
     }
 }

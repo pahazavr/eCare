@@ -8,9 +8,6 @@ import org.springframework.validation.Validator;
 import tsystems.javaschool.eCare.model.Client;
 import tsystems.javaschool.eCare.service.ClientService;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
 @Component
 public class ClientValidator implements Validator {
 
@@ -41,34 +38,18 @@ public class ClientValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "birthDate", "Required");
-        try {
-            Date date = client.getBirthDate();
-        }
-        catch (Exception ex) {
-            errors.rejectValue("birthDate", "Convert.client.birthDate");
+//        if(client.getBirthDate()) {
+//            errors.rejectValue("birthDate", "Format.client.birthDate");
+//        }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passport", "Required");
+        if (client.getPassport() != null && client.getPassport().toString().length() != 10) {
+            errors.rejectValue("passport", "Format.client.passport");
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "address", "Required");
-        if (client.getAddress().length() > 60) {
+        if (client.getAddress().length() > 250) {
             errors.rejectValue("surname", "Size.client.address");
-        }
-
-        if (client.getEmail().length() < 8 || client.getEmail().length() > 32) {
-            errors.rejectValue("email", "Size.client.email");
-        }
-
-//        if (clientService.findClientByEmail(client.getEmail()) != null) {
-//            errors.rejectValue("email", "Duplicate.client.email");
-//        }
-
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "Required");
-        if (client.getPassword().length() < 8 || client.getPassword().length() > 32) {
-            errors.rejectValue("password", "Size.client.password");
-        }
-
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "Required");
-        if (!client.getConfirmPassword().equals(client.getPassword())) {
-            errors.rejectValue("confirmPassword", "Different.client.password");
         }
     }
 }

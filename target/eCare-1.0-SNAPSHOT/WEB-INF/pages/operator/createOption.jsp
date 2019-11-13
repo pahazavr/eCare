@@ -35,7 +35,7 @@
                 <form:label path="title">Title:</form:label>
                 <div class="form-group ${status.error ? 'has-error' : ''}">
                     <form:input type="text" path="title" class="form-control"
-                                placeholder="Option title"/> *
+                                placeholder="Option title"/>
                     <form:errors path="title"/>
                 </div>
             </spring:bind>
@@ -45,7 +45,7 @@
                 <form:label path="price">Price:</form:label>
                 <div class="form-group ${status.error ? 'has-error' : ''}">
                     <form:input type="text" path="price" class="form-control"
-                                placeholder="Option price"/> *
+                                placeholder="Option price"/>
                     <form:errors path="price"/>
                 </div>
             </spring:bind>
@@ -55,14 +55,10 @@
                 <form:label path="costOfConnection">Cost of connection:</form:label>
                 <div class="form-group ${status.error ? 'has-error' : ''}">
                     <form:input type="text" path="costOfConnection" class="form-control"
-                                placeholder="Cost of connection"/> *
+                                placeholder="Cost of connection"/>
                     <form:errors path="costOfConnection"/>
                 </div>
             </spring:bind>
-            <p>
-                (*) - required fields.
-            </p>
-            <br>
 
             <button type="submit" class="btn btn-outline-primary btn-rounded waves-effect">Create</button>
 

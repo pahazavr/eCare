@@ -16,61 +16,29 @@
 </head>
 
 <body>
-<!-- Default form login -->
-<c:url value="/login" var="login"/>
-    <form class="form-signin text-center border border-light p-5" method="POST" action="${login}">
-        <p class="h4 mb-4">Log in</p>
 
-        <div class="form-group ${error != null ? 'has-error' : ''}">
-
-            <span>
-                <c:if test="${message != null}">
-                    <div class="inner-wrapper-success" id="success">
-                        <p>
-                            Success: ${message}
-                        </p>
-                    </div>
-
-                    <SCRIPT language="javascript">
-                        setInterval(function() {
-                            $("#success").attr("hidden", true);
-                        }, 5000);
-                    </SCRIPT>
-
-                </c:if>
-            </span>
+<div class="container">
+    <jsp:include page="fragments/header.jsp"/>
+    <div class="row justify-content-center align-items-center">
+    <form class="text-left mx-5 my-5" style="width: 500px;" method="POST" action="${contextPath}/login">
             <!-- Email -->
-            <input name="email" type="email" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="E-mail"
-                   autofocus="true">
+        <label for="email">Email:</label>
+            <input id="email" name="email" type="email" class="form-control mb-4" placeholder="E-mail" autofocus="true">
             <!-- Password -->
-            <input name = "password" type="password" id="defaultLoginFormPassword" class="form-control mb-4" placeholder="Password">
+        <label for="password">Password:</label>
+            <input id="password" name = "password" type="password" class="form-control mb-4" placeholder="Password">
 
-            <span>
-                <c:if test="${error != null}">
-                    <div class="inner-wrapper-error" id="error">
-                        <p>
-                            Error: ${error}
-                        </p>
-                    </div>
-
-                    <SCRIPT language="javascript">
-                        setInterval(function() {
-                            $("#error").attr("hidden", true);
-                        }, 5000);
-                    </SCRIPT>
-                </c:if>
-            </span>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
             <!-- Sign in button -->
-            <button class="btn btn-info btn-block my-4" type="submit">Sign in</button>
-        </div>
+            <button class="btn btn-primary btn-block my-4" type="submit">Sign in</button>
         <!-- Register -->
-        <p>Not a member?
-            <c:url value="/registration" var="registration"/>
-            <a href="${registration}">Register</a>
+        <p class="text-center">Not a member?
+            <a href="${contextPath}/registration">Register</a>
         </p>
     </form>
-<!-- Default form login -->
+    </div>
+    <jsp:include page="fragments/footer.jsp"/>
+</div>
 <!-- /container -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="${contextPath}/res/js/bootstrap.js"></script>

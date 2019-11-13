@@ -47,10 +47,11 @@
         <tr>
             <td>
                 <form:form method="POST"
-                           action="${contextPath}/client/addAmountToBalance"
+                           action="${contextPath}/operator/addAmountToBalance"
                            enctype="application/x-www-form-urlencoded">
-                <input type="text" class="input-group form-control mb-4"
-                       placeholder="Enter amount" name="amount" size=10 value="" width="15">
+                    <input type="hidden" name="clientId" value=${client.id}>
+                    <input type="text" class="input-group form-control mb-4"
+                           placeholder="Enter amount" name="amount">
             </td>
             <td>
                 <button class="btn btn-outline-primary btn-rounded waves-effect"
@@ -61,16 +62,18 @@
     </table>
 
     <form:form id="editProfileForm" method="POST"
-               action="${contextPath}/client/editProfile"
+               action="${contextPath}/operator/editProfile"
                enctype="application/x-www-form-urlencoded">
+        <input type="hidden" name="clientId" value="${client.id}">
+    </form:form>
+
+    <form:form id="createNewContractForm" method="POST"
+               action="${contextPath}/operator/newContract"
+               enctype="application/x-www-form-urlencoded">
+        <input type="hidden" name="clientId" value="${client.id}">
     </form:form>
 
     <div>
-        <form:form id="createNewContractForm" method="POST"
-                   action="${contextPath}/operator/newContract"
-                   enctype="application/x-www-form-urlencoded">
-            <input type="hidden" name="clientId" value="${client.id}">
-        </form:form>
         <p>
             Contracts list:
             <c:choose>
@@ -113,6 +116,7 @@
                     <form:form id="viewContractForm${contract.id}" method="POST"
                                action="${contextPath}/operator/viewContract"
                                enctype="application/x-www-form-urlencoded">
+                        <input type="hidden" name="clientId" value=${client.id}>
                         <input type="hidden" name="contractId" value=${contract.id}>
                         <a href="#" onclick="document.forms['viewContractForm${contract.id}'].submit()">${contract.number}</a>
                     </form:form>

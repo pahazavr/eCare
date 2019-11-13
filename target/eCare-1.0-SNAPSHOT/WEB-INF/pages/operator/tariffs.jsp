@@ -53,7 +53,8 @@
                         <tr>
                             <td>
 
-                                <form:form id="viewTariffForm${tariff.id}" method="POST" action="${contextPath}/operator/viewTariff"
+                                <form:form id="viewTariffForm${tariff.id}" method="POST"
+                                           action="${contextPath}/operator/viewTariff"
                                            enctype="application/x-www-form-urlencoded">
                                     <input type="hidden" name="tariffId" value=${tariff.id}>
                                     <a href="#" onclick="document.forms['viewTariffForm${tariff.id}'].submit()">${tariff.id}</a>
@@ -68,7 +69,8 @@
                             </td>
                             <td style="width: 0">
 
-                                <form:form id="deleteTariffForm${tariff.id}" method="POST" action="${contextPath}/operator/deleteTariff"
+                                <form:form id="deleteTariffForm${tariff.id}" method="POST"
+                                           action="${contextPath}/operator/deleteTariff"
                                            enctype="application/x-www-form-urlencoded">
                                     <input type="hidden" name="tariffId" value=${tariff.id}>
                                     <a title="Delete tariff" href="#" onclick="document.forms['deleteTariffForm${tariff.id}'].submit()">Delete</a>

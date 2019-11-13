@@ -58,7 +58,7 @@ public class ClientDAOImpl implements ClientDAO {
     @Override
     public Client getClientById(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Client.class, id);
+        return session.find(Client.class, id);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class ClientDAOImpl implements ClientDAO {
     @Override
     public Client findClientByNumber(Long number) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createNamedQuery("Client.findClientByNumber", Client.class)
-                .setParameter("number", number)
-                .getSingleResult();
+        Query query = session.createNamedQuery("Client.findClientByNumber", Client.class);
+        query.setParameter("number", number);
+        return (Client) query.getSingleResult();
     }
 }

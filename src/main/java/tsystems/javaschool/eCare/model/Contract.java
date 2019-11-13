@@ -11,19 +11,16 @@ import java.util.Set;
 @Table(name = "contracts")
 @NamedQueries(
         {
-//                @NamedQuery(name = "Contract.getAllContracts", query = "SELECT cnt FROM Contract cnt"),
-//                @NamedQuery(name = "Contract.findContractByNumber", query = "SELECT cnt FROM Contract cnt WHERE cnt.number = :number"),
-                @NamedQuery(name = "Contract.getAllContractsForClient", query = "SELECT cnt FROM Contract cnt WHERE cnt.client.id = :id"),
-//                @NamedQuery(name = "Contract.deleteAllContracts", query="DELETE FROM Contract"),
-//                @NamedQuery(name = "Contract.deleteAllContractsForClient", query = "DELETE FROM Contract WHERE client.id = :id"),
-//                @NamedQuery(name = "Contract.size", query="SELECT count(cnt) FROM Contract cnt")
+                @NamedQuery(name = "Contract.getAllContracts", query = "SELECT cnt FROM Contract cnt"),
+                @NamedQuery(name = "Contract.findContractByNumber", query = "SELECT cnt FROM Contract cnt WHERE cnt.number = :number"),
+                @NamedQuery(name = "Contract.getAllContractsForClient", query = "SELECT cnt FROM Contract cnt WHERE cnt.client.id = :clientId"),
         })
 public class Contract implements Serializable {
 
     private Long id;
     private Long number;
-    private Boolean blockedByClient;
-    private Boolean blockedByOperator;
+    private Boolean blockedByClient = false;
+    private Boolean blockedByOperator = false;
     private Tariff tariff;
     private Client client;
     private Set<Option> options = new HashSet<>();
@@ -79,7 +76,7 @@ public class Contract implements Serializable {
         this.client = client;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable
             (
                     name="connected_options",
@@ -108,7 +105,6 @@ public class Contract implements Serializable {
     }
 
     public void setBlockedByClient(Boolean blockedByClient) {
-//        if(!blockedByClient && blockedByOperator) return;
         this.blockedByClient = blockedByClient;
     }
 

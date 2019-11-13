@@ -63,9 +63,10 @@
                     </td>
                     <td style="width: 0">
 
-                        <form:form id="deleteClientForm${client.id}" method="POST" action="${contextPath}/operator/deleteClient"
+                        <form:form id="deleteClientForm${client.id}" method="POST"
+                                   action="${contextPath}/operator/deleteClient"
                                    enctype="application/x-www-form-urlencoded">
-                            <input type="hidden" name="id" value=${client.id}>
+                            <input type="hidden" name="clientId" value=${client.id}>
                             <a title="Delete client" href="#" onclick="document.forms['deleteClientForm${client.id}'].submit()">Delete</a>
                         </form:form>
 

@@ -59,7 +59,7 @@ public class TariffDAOImpl implements TariffDAO {
     @Override
     public Tariff getTariffById(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Tariff.class, id);
+        return session.find(Tariff.class, id);
     }
 
 }

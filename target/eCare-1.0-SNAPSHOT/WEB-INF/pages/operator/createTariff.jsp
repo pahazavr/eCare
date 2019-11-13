@@ -34,7 +34,7 @@
                 <form:label path="title">Title:</form:label>
                 <div class="form-group ${status.error ? 'has-error' : ''}">
                     <form:input type="text" path="title" class="form-control"
-                                placeholder="Tariff title"/> *
+                                placeholder="Tariff title"/>
                     <form:errors path="title"/>
                 </div>
             </spring:bind>
@@ -48,11 +48,6 @@
                     <form:errors path="price"/>
                 </div>
             </spring:bind>
-
-            <p>
-                (*) - required fields.
-            </p>
-            <br>
             <button type="submit" class="btn btn-outline-primary btn-rounded waves-effect">Create</button>
             <a href="#" onclick="document.forms['viewAllTariffsForm'].submit()">Back</a>
         </form:form>

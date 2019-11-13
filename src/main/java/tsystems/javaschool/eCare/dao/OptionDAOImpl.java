@@ -58,7 +58,7 @@ public class OptionDAOImpl implements OptionDAO {
     @Override
     public Option getOptionById(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Option.class, id);
+        return session.find(Option.class, id);
     }
 
     @Override

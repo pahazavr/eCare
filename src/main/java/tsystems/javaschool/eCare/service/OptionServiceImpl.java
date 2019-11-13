@@ -92,18 +92,6 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     @Transactional
-    public List<Option> getAllOptions() {
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public void deleteAllOptions() {
-
-    }
-
-    @Override
-    @Transactional
     public Long getNumberOfOptions() {
         logger.info("Get number of options in DB.");
         Long number = optionDAO.getSize();
@@ -145,7 +133,7 @@ public class OptionServiceImpl implements OptionService {
             if(!currentOption.getDependentOptions().contains(dependentOption) && !currentOption.equals(dependentOption)) {
                 currentOption.addDependentOption(dependentOption);
                 logger.info("Option id: " + dependentOption.getId() + " is now dependent for option id: " + currentOption.getId() + ".");
-                edit(currentOption);
+//                edit(currentOption);
             }
         }
         else {
@@ -200,7 +188,7 @@ public class OptionServiceImpl implements OptionService {
             if(!currentOption.getIncompatibleOptions().contains(incompatibleOption) && !currentOption.equals(incompatibleOption)) {
                 currentOption.addIncompatibleOption(incompatibleOption);
                 logger.info("Option id: " + currentOption.getId() + " is now incompatible with option id: " + incompatibleOption.getId() + ".");
-                edit(currentOption);
+//                edit(currentOption);
             }
         }
         else {
@@ -249,7 +237,7 @@ public class OptionServiceImpl implements OptionService {
     @Transactional
     public Option createDependencies(Option option, String[] dependentOptionsArray, String[] incompatibleOptionsArray) {
         //Set dependent options if exists for current option.
-        long dependentOptionId = 0;
+        Long dependentOptionId = 0L;
         Option dependentOption = null;
         if(dependentOptionsArray != null) {
             for(String stringId: dependentOptionsArray) {
@@ -260,7 +248,7 @@ public class OptionServiceImpl implements OptionService {
             }
         }
         //Set incompatible options if exists for current option.
-        long incompatibleOptionId = 0;
+        Long incompatibleOptionId = 0L;
         Option incompatibleOption = null;
         if(incompatibleOptionsArray != null) {
             for (String stringId : incompatibleOptionsArray) {
@@ -271,7 +259,7 @@ public class OptionServiceImpl implements OptionService {
             }
         }
         //Updating of option in DB.
-        edit(option);
+//        edit(option);
         return option;
     }
 }

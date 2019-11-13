@@ -95,7 +95,7 @@
             <a title="Clear all dependencies" href="#" onclick="document.forms['deleteAllDependentOptionsForm'].submit()">Delete</a>
 
             <form:form id="deleteAllDependentOptionsForm" method="POST"
-                       action="${contextPath}/operstor/deleteAllDependentOptions"
+                       action="${contextPath}/operator/deleteAllDependentOptions"
                        enctype="application/x-www-form-urlencoded">
                 <input type="hidden" name="optionId" value="${option.id}">
                 <input type="hidden" name="tariffId" value="${tariff.id}">
@@ -137,7 +137,7 @@
                     </td>
                     <td style="width: 0">
                         <form:form id="deleteDependentOptionForm${dependentOption.id}" method="POST"
-                                   action="${contextPath}/operstor/deleteDependentOption"
+                                   action="${contextPath}/operator/deleteDependentOption"
                                    enctype="application/x-www-form-urlencoded">
                             <input type="hidden" name="optionId" value="${option.id}">
                             <input type="hidden" name="dependentOptionId" value="${dependentOption.id}">
@@ -207,7 +207,7 @@
                     </td>
                     <td style="width: 0">
                         <form:form id="deleteIncompatibleOptionForm${incompatibleOption.id}" method="POST"
-                                   action="${contextPath}/operstor/deleteIncompatibleOption"
+                                   action="${contextPath}/operator/deleteIncompatibleOption"
                                    enctype="application/x-www-form-urlencoded">
                             <input type="hidden" name="optionId" value="${option.id}">
                             <input type="hidden" name="incompatibleOptionId" value="${incompatibleOption.id}">

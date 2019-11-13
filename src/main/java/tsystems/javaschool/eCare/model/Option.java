@@ -9,12 +9,9 @@ import java.util.Set;
 @Table(name = "options")
 @NamedQueries(
         {
-//                @NamedQuery(name = "Option.getAllOptions", query = "SELECT o FROM Option o"),
-//                @NamedQuery(name = "Option.findOptionByTitleAndTariffId", query = "SELECT o FROM Option o WHERE o.title = :title AND o.tariff.id = :id"),
                 @NamedQuery(name = "Option.getAllOptionsForTariff", query = "SELECT o FROM Option o WHERE o.tariff.id = :id"),
-//                @NamedQuery(name = "Option.deleteAllOptions", query = "DELETE FROM Option"),
-//                @NamedQuery(name = "Option.deleteAllOptionsForTariff", query = "DELETE FROM Option WHERE tariff.id = :id"),
-//                @NamedQuery(name = "Option.size", query="SELECT count(op) FROM Option op")
+                @NamedQuery(name = "Option.deleteAllOptions", query = "DELETE FROM Option"),
+                @NamedQuery(name = "Option.deleteAllOptionsForTariff", query = "DELETE FROM Option WHERE tariff.id = :id"),
         })
 public class Option implements Serializable {
 
@@ -84,7 +81,7 @@ public class Option implements Serializable {
         this.tariff = tariff;
     }
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable
             (
                     name="dependent_options",
@@ -107,7 +104,7 @@ public class Option implements Serializable {
         this.dependentOptions.remove(option);
     }
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable
             (
                     name= "incompatible_options",

@@ -108,7 +108,8 @@
                             </td>
                             <td style="width: 0">
 
-                                <form:form id="deleteOptionForm${option.id}" method="post" action="${contextPath}/operator/deleteOption"
+                                <form:form id="deleteOptionForm${option.id}" method="POST"
+                                           action="${contextPath}/operator/deleteOption"
                                            enctype="application/x-www-form-urlencoded">
                                     <input type="hidden" name="optionId" value=${option.id}>
                                     <input type="hidden" name="tariffId" value=${tariff.id}>

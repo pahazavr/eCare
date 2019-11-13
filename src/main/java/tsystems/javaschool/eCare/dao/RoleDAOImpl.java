@@ -28,6 +28,6 @@ public class RoleDAOImpl implements RoleDAO {
     @Override
     public Role getById(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Role.class, id);
+        return session.find(Role.class, id);
     }
 }

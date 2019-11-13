@@ -41,8 +41,8 @@ public class ContractDAOImpl implements ContractDAO {
     @Override
     public List<Contract> getAllContracts() {
         Session session = sessionFactory.getCurrentSession();
-//        return session.createNamedQuery("Contract.getAllContracts", Contract.class).getResultList();
-        return null;
+        Query query = session.createNamedQuery("Contract.getAllContracts", Contract.class);
+        return (List<Contract>) query.getResultList();
     }
 
     @Override
@@ -60,23 +60,22 @@ public class ContractDAOImpl implements ContractDAO {
     @Override
     public Contract getContractById(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Contract.class, id);
+        return session.find(Contract.class, id);
 }
 
     @Override
     public Contract findContractByNumber(Long number) {
         Session session = sessionFactory.getCurrentSession();
-//        Query query = session.createNamedQuery("Contract.findContractByNumber", Contract.class)
-//                .setParameter("number", number);
-//        return (Contract) query.getSingleResult();
-        return null;
+        Query query = session.createNamedQuery("Contract.findContractByNumber", Contract.class);
+        query.setParameter("number", number);
+        return (Contract) query.getSingleResult();
     }
 
     @Override
-    public List<Contract> getAllContractsForClient(Long id) {
+    public List<Contract> getAllContractsForClient(Long clientId) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createNamedQuery("Contract.getAllContractsForClient", Contract.class);
-        query.setParameter("id", id);
+        query.setParameter("clientId", clientId);
         return (List<Contract>) query.getResultList();
     }
 

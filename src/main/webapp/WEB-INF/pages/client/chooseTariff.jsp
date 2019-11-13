@@ -57,13 +57,13 @@
             <c:forEach var="tariff" items="${tariffsList}">
                 <tr>
                     <td>
-                        <form:form id="chooseTariffForm"
+                        <form:form id="chooseTariffForm${tariff.id}"
                                    method="POST"
                                    action="${contextPath}/client/chooseTariff"
                                    enctype="application/x-www-form-urlencoded">
                             <input type="hidden" name="contractId" value=${contract.id}>
                             <input type="hidden" name="tariffId" value=${tariff.id}>
-                            <a href="#" onclick="document.forms['chooseTariffForm'].submit()">${tariff.title}</a>
+                            <a href="#" onclick="document.forms['chooseTariffForm${tariff.id}'].submit()">${tariff.title}</a>
                         </form:form>
                     </td>
                     <td>

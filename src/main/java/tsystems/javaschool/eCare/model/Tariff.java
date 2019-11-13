@@ -10,8 +10,7 @@ import java.util.Set;
 @NamedQueries(
         {
                 @NamedQuery(name = "Tariff.getAllTariffs", query = "SELECT t FROM Tariff t"),
-//                @NamedQuery(name = "Tariff.deleteAllTariffs", query = "DELETE FROM Tariff"),
-//                @NamedQuery(name = "Tariff.size", query="SELECT count(t) FROM Tariff t")
+                @NamedQuery(name = "Tariff.deleteAllTariffs", query = "DELETE FROM Tariff"),
         })
 public class Tariff  implements Serializable {
 
@@ -57,7 +56,7 @@ public class Tariff  implements Serializable {
         this.price = price;
     }
 
-    @OneToMany( mappedBy = "tariff", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany( mappedBy = "tariff", cascade = CascadeType.MERGE, fetch = FetchType.EAGER, orphanRemoval = true)
     public Set<Option> getOptions() {
         return options;
     }

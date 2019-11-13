@@ -18,44 +18,42 @@
 <body>
 <div class="outer-wrapper container">
     <jsp:include page="../fragments/header.jsp"/>
-    <h3>Profile info of ${client.getName()}:
+    <h3>Profile info of ${client.name}:
         <a href="#" onclick="document.forms['editProfileForm'].submit()">Edit</a></h3>
     <table class="table">
         <tr>
             <td>Full name</td>
-            <td>${client.getFullName()}</td>
+            <td>${client.fullName}</td>
         </tr>
         <tr>
             <td>Birth Date</td>
-            <td>${client.getBirthDate()}</td>
+            <td>${client.birthDate}</td>
         </tr>
         <tr>
             <td>Passport</td>
-            <td>${client.getPassport()}</td>
+            <td>${client.passport}</td>
         </tr>
         <tr>
             <td>Address</td>
-            <td>${client.getAddress()}</td>
+            <td>${client.address}</td>
         </tr>
         <tr>
             <td>Email</td>
-            <td>${client.getEmail()}</td>
+            <td>${client.email}</td>
         </tr>
         <tr>
             <td>Balance</td>
-            <td>${client.getBalance()}</td>
+            <td>${client.balance}</td>
         </tr>
         <tr>
             <td>
                 <form:form method="POST"
                            action="${contextPath}/client/addAmountToBalance"
                            enctype="application/x-www-form-urlencoded">
-                    <input type="text" class="input-group form-control mb-4"
-                           placeholder="Enter amount" name="amount" size=10 value="" width="15">
+                <input type="number" class="input-group form-control mb-4" name="amount" value="0">
             </td>
             <td>
-                    <button class="btn btn-outline-primary btn-rounded waves-effect"
-                            type="submit">Replenish</button>
+                <button class="btn btn-outline-primary btn-rounded waves-effect" type="submit">Replenish</button>
                 </form:form>
             </td>
         </tr>
@@ -64,7 +62,6 @@
     <form:form id="editProfileForm" method="POST"
                action="${contextPath}/client/editProfile"
                enctype="application/x-www-form-urlencoded">
-        <input type="hidden" name="sessionRole" value=${role}>
     </form:form>
 
     <jsp:include page="../fragments/footer.jsp"/>

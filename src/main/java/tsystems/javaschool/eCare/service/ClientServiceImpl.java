@@ -155,16 +155,16 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public Client findClientByEmail(String username) throws ECareException {
-        logger.info("Find client with Email: " + username + " in DB.");
+    public Client findClientByEmail(String email) throws ECareException {
+        logger.info("Find client with Email: " + email + " in DB.");
         Client client = null;
         try {
-            // Search of client in the database by DAO method.
-            client = clientDAO.findClientByEmail(username);
-            // If client does not exist in database, block "catch" catches the NoResultException and
-            // throws an ECareException.
+             // Search of client in the database by DAO method.
+             client = clientDAO.findClientByEmail(email);
+             // If client does not exist in database, block "catch" catches the NoResultException and
+             // throws an ECareException.
         } catch(NoResultException nrx) {
-            ECareException ecx = new ECareException("Client with Email: " + username + " not found.", nrx);
+            ECareException ecx = new ECareException("Client with Email: " + email + " not found.", nrx);
             logger.warn(ecx.getMessage(), nrx);
             throw ecx;
         }
@@ -174,20 +174,20 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public Client findClientByLoginAndPassword(String login, String password) throws ECareException {
-        logger.info("Find client with login: " + login + " and password:" + password + " in DB.");
-        Client client = null;
+    public Boolean existEmail(String email) {
+        logger.info("Find client with email: " + email + " in DB.");
+        Client cl = null;
         try {
-            // Searching of client in the database by DAO method.
-            client = clientDAO.findClientByLoginAndPassword(login, password);
+            // Search of client in the database by DAO method.
+            cl = clientDAO.findClientByEmail(email);
             // If client does not exist in database, block try catches the NoResultException and
-            // throws an ECareException.
+            // return false.
         } catch(NoResultException nrx) {
-            ECareException ecx = new ECareException("Incorrect login/password or client does not exist.", nrx);
-            logger.warn(ecx.getMessage(), nrx);
-            throw ecx;
+            logger.warn("Client with email: " + email + " does not exist.");
+            return false;
         }
-        logger.info("Client " + client + " found and loaded from DB.");
-        return client;
+        logger.info("Client " + cl + " found in DB.");
+        // Else, if client exist and loaded, method returns true.
+        return true;
     }
 }

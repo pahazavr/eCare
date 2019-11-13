@@ -1,5 +1,7 @@
 package tsystems.javaschool.eCare.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
@@ -15,8 +17,6 @@ import java.util.Set;
                 @NamedQuery(name = "Client.findClientByLoginAndPassword", query = "SELECT cl FROM Client cl WHERE cl.email = :login AND cl.password = :password"),
                 @NamedQuery(name = "Client.findClientByNumber", query = "SELECT cnt.client FROM Contract cnt WHERE cnt.number = :number"),
                 @NamedQuery(name = "Client.findClientByEmail", query = "SELECT cl FROM Client cl WHERE cl.email = :email"),
-//                @NamedQuery(name = "Client.deleteAllClients", query = "DELETE FROM Client WHERE Role.title = 'ROLE_USER'"),
-//                @NamedQuery(name = "Client.size", query="SELECT count(cl) FROM Client cl WHERE Role.title = 'ROLE_USER'")
         })
 public class Client implements Serializable {
 
@@ -30,9 +30,8 @@ public class Client implements Serializable {
     private String email;
     private String password;
 
-
-    private String confirmPassword;
     private String fullName;
+    private String confirmPassword;
 
     private Set<Role> roles = new HashSet<>();
     private Set<Contract> contracts = new HashSet<>();
@@ -83,15 +82,15 @@ public class Client implements Serializable {
 
     @Transient
     public String getFullName() {
-        if(surname != null) return name + " " + surname;
-        else return name;
+        return name + " " + surname;
     }
 
     public void setFullName(String fullName) {
-       this.fullName = fullName;
+        this.fullName = fullName;
     }
 
-    @Temporal(TemporalType.DATE)
+//    @Temporal(TemporalType.DATE)
+//    @DateTimeFormat(pattern = "yyyy-mm-dd")
     @Column(name = "birthDate")
     public Date getBirthDate() {
         return birthDate;
@@ -170,7 +169,7 @@ public class Client implements Serializable {
         this.roles = roles;
     }
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.MERGE, fetch = FetchType.EAGER, orphanRemoval = true)
     public Set<Contract> getContracts() {
         return contracts;
     }
@@ -178,7 +177,6 @@ public class Client implements Serializable {
     public void setContracts(Set<Contract> contracts) {
         this.contracts = contracts;
     }
-
 
     public void addContract(Contract contract) {
         this.contracts.add(contract);
@@ -190,6 +188,7 @@ public class Client implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
+                ", birthDate='" + birthDate + '\'' +
                 ", passport=" + passport +
                 ", address='" + address + '\'' +
                 ", email='" + email + '\'' +

@@ -1,7 +1,15 @@
 package tsystems.javaschool.eCare.service;
 
+/**
+ * Interface of service level for option entity.
+ * It is an intermediate level between controllers and option DAO.
+ */
 public interface SecurityService {
 
-    String findLoggedInEmail();
+    /**
+     * This method provides autoLogin for new client.
+     * @param username email of new client.
+     * @param password password of new client.
+     */
     void autoLogin(String username, String password);
 }

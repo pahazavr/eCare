@@ -1,21 +1,22 @@
 package tsystems.javaschool.eCare.util;
 
 public enum PageName {
-    LOGIN ("Login"),
-    REGISTRATION ("Registration"),
-    DASHBOARD ("Dashboard"),
-    TARIFFS ("Tariffs"),
-    TARIFF ("Tariff"),
-    NEW_TARIFF("New tariff"),
-    OPTION ("Option"),
-    OPTION_SETTINGS("Option settings"),
-    NEW_OPTION("New option"),
-    CLIENT("Client"),
-    EDIT_CLIENT("Edit client"),
-    CONTRACT ("Contract"),
+    HOME("Home"),
+    PROFILE("Profile"),
+    EDIT_PROFILE("Edit profile"),
+    CONTRACTS("Contracts"),
+    VIEW_CONTRACT("Contract"),
+    CHANGE_TARIFF("Choose tariff"),
+    CHOOSE_OPTIONS("Choose options"),
+    CLIENTS("Clients"),
+    VIEW_CLIENT("Client"),
     NEW_CONTRACT("New contract"),
-    CHOOSE_TARIFF("Choose tariff"),
-    CHOOSE_OPTIONS("Choose options");
+    TARIFFS("Tariffs"),
+    VIEW_TARIFF("Tariff"),
+    NEW_TARIFF("New tariff"),
+    NEW_OPTION("New option"),
+    VIEW_OPTION("Option"),
+    EDIT_OPTION("Edit option");
 
     private String title;
 

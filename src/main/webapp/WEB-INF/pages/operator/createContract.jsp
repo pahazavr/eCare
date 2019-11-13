@@ -23,7 +23,7 @@
     <div>
 
         <p>
-            Creating of new contract for client: ${client.fullName)}
+            Creating of new contract for client: ${client.fullName}
         </p>
         <br>
 
@@ -36,11 +36,20 @@
 
             <!-- number -->
             <spring:bind path="number">
-                <form:label path="number">Telephone number (must be unique):</form:label>
                 <div class="form-group ${status.error ? 'has-error' : ''}">
+                <form:label path="number">Telephone number:</form:label>
                     <form:input type="text" path="number" class="form-control"
-                                placeholder="Telephone number"/> *
+                                placeholder="Telephone number"
+                                aria-describedby="numberHelpInline"/>
                     <form:errors path="number"/>
+                    <c:choose>
+                        <c:when test="${status.error}"/>
+                        <c:otherwise>
+                            <small id="nameHelpInline" class="text-muted">
+                                Telephone number must be unique.
+                            </small>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </spring:bind>
 
@@ -49,7 +58,7 @@
             <form:form id="viewClientForm" method="POST"
                        action="${contextPath}/operator/viewClient"
                        enctype="application/x-www-form-urlencoded">
-                <input type="hidden" name="id" value=${client.id}>
+                <input type="hidden" name="clientId" value=${client.id}>
                 <a href="#" onclick="document.forms['viewClientForm'].submit()">Back</a>
             </form:form>
         </form:form>
